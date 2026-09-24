@@ -1,0 +1,1948 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Prompt Fighter</title>
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,viewport-fit=cover">
+<meta name="description" content="A robot-vs-monster game where kids learn three real AI prompting skills.">
+<meta name="theme-color" content="#0A0424">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Prompt Fighter">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="format-detection" content="telephone=no">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
+<link rel="icon" type="image/png" href="icons/icon-192.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bungee&family=Lilita+One&family=Nunito:wght@600;700;800;900&display=swap">
+<style>
+:root{
+  --bg:#0A0424; --glass:#1B0E55; --glass2:#2A1783; --line:#4B33C9;
+  --blue:#22D3FF; --purple:#B57BFF; --violet:#7B3DFF; --green:#39FF88;
+  --yellow:#FFE44D; --red:#FF3D5A; --pink:#FF4FD8; --navy:#0A0424;
+  --text:#F4F0FF; --muted:#B9ADF2;
+  --disp:'Lilita One','Fredoka',system-ui,sans-serif;
+  --arc:'Bungee','Lilita One',system-ui,sans-serif;
+  --body:'Nunito',system-ui,-apple-system,'Segoe UI',sans-serif;
+}
+*{box-sizing:border-box}
+html,body{min-height:100%}
+body{background:var(--bg);color:var(--text);font:700 16px/1.4 var(--body);-webkit-tap-highlight-color:transparent}
+body::before{content:"";position:fixed;inset:0;z-index:-1;pointer-events:none;background:
+  radial-gradient(900px 520px at 50% -8%,rgba(123,61,255,.6),transparent 65%),
+  radial-gradient(700px 420px at 100% 105%,rgba(34,211,255,.28),transparent 60%),
+  radial-gradient(600px 380px at 0% 100%,rgba(255,79,216,.22),transparent 60%),
+  linear-gradient(rgba(34,211,255,.08) 1px,transparent 1px) 0 0/44px 44px,
+  linear-gradient(90deg,rgba(34,211,255,.08) 1px,transparent 1px) 0 0/44px 44px,
+  var(--bg)}
+button{font-family:var(--body);color:inherit}
+:focus-visible{outline:4px solid var(--green);outline-offset:3px}
+html{-webkit-text-size-adjust:100%;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px);overscroll-behavior:none}
+body{overscroll-behavior:none;-webkit-user-select:none;user-select:none;-webkit-touch-callout:none;touch-action:manipulation}
+.wrap{max-width:980px;margin:0 auto;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-top:12px;padding-bottom:28px}
+
+/* ---------- buttons ---------- */
+.btn{font:900 16px/1 var(--body);color:var(--text);background:linear-gradient(#3F26B5,#26127A);border:3px solid var(--blue);border-radius:16px;padding:12px 16px;box-shadow:0 5px 0 #0C0640,0 0 16px rgba(34,211,255,.35);cursor:pointer;transition:transform .08s,box-shadow .15s,filter .15s;touch-action:manipulation}
+.btn:hover:not(:disabled){filter:brightness(1.25);box-shadow:0 5px 0 #0C0640,0 0 26px rgba(34,211,255,.8)}
+.btn:active:not(:disabled){transform:translateY(5px);box-shadow:0 0 0 #0C0640,0 0 14px rgba(34,211,255,.6)}
+.btn:disabled{opacity:.45;cursor:not-allowed}
+.btn.go{color:var(--navy);background:linear-gradient(#9CFFC4,#2BE377);border-color:#D6FFE6;box-shadow:0 5px 0 #0E7A3D,0 0 22px rgba(57,255,136,.55)}
+.btn.go:hover:not(:disabled){box-shadow:0 5px 0 #0E7A3D,0 0 34px rgba(57,255,136,.95)}
+.btn.go:active:not(:disabled){box-shadow:0 0 0 #0E7A3D,0 0 16px rgba(57,255,136,.6)}
+.btn.hot{color:#fff;background:linear-gradient(#FF7BE6,#DC26BB);border-color:#FFC7F5;box-shadow:0 5px 0 #86106F,0 0 22px rgba(255,79,216,.6)}
+.btn.sm{padding:9px 13px;font-size:14px;border-radius:14px}
+.btn.big{font:400 26px/1 var(--disp);padding:16px 32px;border-radius:22px;letter-spacing:.03em}
+
+/* ---------- title ---------- */
+.title-hero{text-align:center;padding-top:10px}
+.logo{font-family:var(--arc);font-weight:400;line-height:.98;margin:0;color:#fff;font-size:clamp(44px,12.5vw,104px);letter-spacing:.02em;text-wrap:balance;
+  text-shadow:0 0 6px #fff,0 0 16px var(--blue),0 0 34px var(--violet),0 0 64px var(--violet);animation:neon 3.4s ease-in-out infinite}
+.logo-sub{display:inline-block;margin-top:18px;padding:8px 18px;border:3px solid var(--green);border-radius:14px;color:var(--green);font:400 clamp(14px,4.2vw,26px)/1.1 var(--arc);letter-spacing:.08em;
+  text-shadow:0 0 10px var(--green);box-shadow:0 0 18px rgba(57,255,136,.55),inset 0 0 14px rgba(57,255,136,.3);transform:rotate(-2deg);animation:flicker 4s steps(1) infinite}
+.cast{position:relative;display:flex;align-items:flex-end;justify-content:center;gap:clamp(10px,4vw,34px);margin:26px 0 12px;padding-bottom:12px}
+.cast::after{content:"";position:absolute;left:4%;right:4%;bottom:0;height:8px;border-radius:50%;background:radial-gradient(ellipse,rgba(34,211,255,.9),transparent 70%);filter:blur(3px)}
+.cast .m{font-size:clamp(46px,12vw,84px);line-height:1;transform-origin:50% 100%;animation:squash 1.2s ease-in-out infinite;filter:drop-shadow(0 0 14px rgba(181,123,255,.7))}
+.cast .m:nth-child(1){animation-delay:-.4s}.cast .m:nth-child(3){animation-delay:-.8s}
+.cast .r{height:clamp(110px,28vw,170px);filter:drop-shadow(0 0 16px rgba(34,211,255,.7))}
+.cast .r svg{height:100%;width:auto;display:block;transform-origin:50% 100%;animation:squash 1.1s ease-in-out infinite}
+.lead{max-width:56ch;margin:14px auto 22px;font-size:clamp(17px,3.6vw,20px);font-weight:800;text-wrap:pretty}
+.lead b{color:var(--navy);background:var(--green);border-radius:8px;padding:1px 8px;white-space:nowrap;box-shadow:0 0 14px rgba(57,255,136,.6)}
+.sec-h{font:400 clamp(24px,5vw,32px)/1.1 var(--disp);margin:34px 0 12px;letter-spacing:.03em;color:#fff;text-shadow:0 0 14px var(--violet)}
+.steps{display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:14px}
+.step{background:linear-gradient(#1F1170,#150A4C);border:3px solid var(--line);border-radius:20px;padding:14px;box-shadow:0 0 18px rgba(123,61,255,.35);display:flex;gap:12px;align-items:flex-start}
+.step .n{flex:none;width:38px;height:38px;border-radius:50%;background:var(--green);color:var(--navy);display:grid;place-items:center;font:400 18px/1 var(--arc);box-shadow:0 0 14px rgba(57,255,136,.7)}
+.step p{margin:0;font-weight:900}
+.step small{display:block;font-weight:700;color:var(--muted);margin-top:2px}
+
+/* ---------- level select ---------- */
+.sel-head{display:flex;align-items:center;gap:14px;flex-wrap:wrap;padding-top:6px}
+.sel-head .sec-h{margin:0;flex:1}
+.sel-sub{margin:8px 0 4px;font-weight:800;max-width:60ch;color:var(--muted)}
+.lc-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(270px,1fr));gap:20px;margin-top:14px}
+.lc{display:flex;flex-direction:column;background:linear-gradient(#1F1170,#120A40);border:3px solid var(--nc);border-radius:26px;box-shadow:0 0 22px var(--nc),0 6px 0 #05021A;overflow:hidden}
+.lc-top{position:relative;height:160px;display:grid;place-items:center;background:linear-gradient(var(--s1),var(--s2));border-bottom:3px solid var(--nc)}
+.lc-top .em{font-size:88px;line-height:1;transform-origin:50% 100%;animation:squash 1.4s ease-in-out infinite;filter:drop-shadow(0 0 16px rgba(255,255,255,.5))}
+.lc-n{position:absolute;top:12px;left:12px;white-space:nowrap;background:var(--navy);color:var(--yellow);font:400 13px/1 var(--arc);letter-spacing:.06em;padding:6px 11px;border-radius:999px;border:2px solid var(--yellow)}
+.lc-lock{position:absolute;top:10px;right:12px;font-size:26px}
+.lc.locked{border-color:#4A3D8F;box-shadow:0 6px 0 #05021A}
+.lc.locked .em{filter:grayscale(1);opacity:.3;animation:none}
+.lc-body{padding:14px 16px 16px;display:flex;flex-direction:column;gap:9px;flex:1}
+.lc-body h3{margin:0;font:400 28px/1.05 var(--disp);letter-spacing:.02em}
+.pill{align-self:flex-start;background:var(--yellow);color:var(--navy);border-radius:999px;padding:3px 12px;font:900 12px/1.4 var(--body);letter-spacing:.07em;text-transform:uppercase}
+.lc-body p{margin:0;text-wrap:pretty}
+.lc-body .ai{background:rgba(123,61,255,.28);border:2px solid var(--purple);border-radius:14px;padding:8px 11px;font-weight:800;font-size:15px}
+.lc-body .ai b{display:block;font:900 11px/1 var(--body);letter-spacing:.1em;text-transform:uppercase;color:var(--blue);margin-bottom:3px}
+.lc-foot{margin-top:auto;display:flex;align-items:center;justify-content:space-between;gap:10px;padding-top:6px}
+.lc-foot .btn{flex:1;font:400 22px/1 var(--disp);padding:13px}
+.stars-sm{font-size:20px;letter-spacing:2px;white-space:nowrap}
+.star.off{filter:grayscale(1);opacity:.3}
+
+/* ---------- battle ---------- */
+.top{position:sticky;top:env(safe-area-inset-top,0px);z-index:10;padding-bottom:12px;background:linear-gradient(var(--bg) 82%,transparent)}
+.bar{display:flex;align-items:center;gap:10px;padding-bottom:10px}
+.bar .lvl{flex:1;min-width:0;line-height:1.1}
+.bar .lvl span,.bar .lvl b{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.bar .lvl b{display:block}
+.bar .lvl span{display:block;font:900 11px/1 var(--body);letter-spacing:.12em;text-transform:uppercase;color:var(--blue)}
+.bar .lvl b{font:400 clamp(18px,4.6vw,24px)/1.1 var(--disp);letter-spacing:.03em;color:#fff;text-shadow:0 0 12px var(--violet)}
+.arena{position:relative;display:flex;flex-direction:column;height:clamp(190px,29vh,310px);border:3px solid var(--nc);border-radius:26px;box-shadow:0 0 26px var(--nc),inset 0 0 40px rgba(0,0,0,.4);overflow:hidden;background:linear-gradient(var(--s1),var(--s2))}
+.arena::after{content:"";position:absolute;inset:0;pointer-events:none;animation:twinkle 3.2s ease-in-out infinite;background-image:
+  radial-gradient(2px 2px at 12% 22%,#fff,transparent),radial-gradient(2px 2px at 34% 64%,#fff,transparent),
+  radial-gradient(3px 3px at 60% 18%,#9FFBFF,transparent),radial-gradient(2px 2px at 82% 42%,#fff,transparent),
+  radial-gradient(2px 2px at 93% 72%,#FFB6F3,transparent),radial-gradient(2px 2px at 48% 40%,#fff,transparent),
+  radial-gradient(3px 3px at 22% 50%,#FFF3A3,transparent)}
+.deco{position:absolute;left:50%;top:58px;transform:translateX(-50%);font-size:34px;line-height:1;animation:bob 3.4s ease-in-out infinite;z-index:1;filter:drop-shadow(0 0 10px var(--nc))}
+.hud{position:relative;z-index:3;display:flex;justify-content:space-between;gap:10px;padding:9px 10px 0}
+.hp{flex:0 1 46%;min-width:0;background:rgba(10,4,36,.82);border:2.5px solid var(--nc);border-radius:14px;padding:5px 9px 7px;box-shadow:0 0 12px rgba(0,0,0,.4)}
+.hp-top{display:flex;justify-content:space-between;align-items:baseline;gap:6px;font:400 15px/1.1 var(--disp);letter-spacing:.02em;white-space:nowrap}
+.hp-top .hp-name{overflow:hidden;text-overflow:ellipsis}
+.hp-num{font:400 13px/1 var(--arc);font-variant-numeric:tabular-nums;color:var(--yellow)}
+.track{position:relative;height:15px;margin-top:4px;border:2px solid #6C55F5;border-radius:999px;background:#05021A;overflow:hidden}
+.track::after{content:"";position:absolute;inset:0;background:repeating-linear-gradient(90deg,transparent 0 9px,rgba(5,2,26,.6) 9px 11px)}
+.fill{height:100%;width:100%;background:linear-gradient(#9CFFC4,#1FE06B);box-shadow:0 0 12px rgba(57,255,136,.9);border-radius:999px;transition:width .7s cubic-bezier(.3,1.2,.4,1),background .3s}
+.fill.mid{background:linear-gradient(#FFF3A3,#FFC400);box-shadow:0 0 12px rgba(255,228,77,.9)}
+.fill.low{background:linear-gradient(#FF9AAA,#FF2B4E);box-shadow:0 0 12px rgba(255,61,90,.9)}
+.stage{position:relative;flex:1;min-height:0;container-type:size;z-index:2}
+.ground{position:absolute;left:0;right:0;bottom:0;height:22%;border-top:3px solid var(--nc);box-shadow:0 -3px 20px var(--nc);
+  background:repeating-linear-gradient(90deg,rgba(255,255,255,.14) 0 2px,transparent 2px 30px),repeating-linear-gradient(0deg,rgba(255,255,255,.12) 0 2px,transparent 2px 16px),linear-gradient(var(--g),#0A0630)}
+.hero{position:absolute;left:9%;bottom:9%;height:80%;height:min(80%,46cqw);z-index:2}
+.hero svg{height:100%;width:auto;display:block;transform-origin:50% 100%;animation:squash 1.15s ease-in-out infinite;overflow:visible;filter:drop-shadow(0 0 10px rgba(34,211,255,.55))}
+.hero .m-sad{display:none}.hero.sad .m-sad{display:block}.hero.sad .m-happy{display:none}
+.hero .eyes{transform-box:fill-box;transform-origin:center;animation:blink 4s infinite}
+.hero .ant{transform-box:fill-box;transform-origin:50% 100%;animation:wig .8s ease-in-out infinite}
+.hero .core{animation:core 1s ease-in-out infinite}
+.sh{position:absolute;left:50%;bottom:-3%;width:70%;height:9px;border-radius:50%;background:rgba(0,0,0,.5);filter:blur(2px);animation:shadowbob 1.15s ease-in-out infinite;pointer-events:none}
+.foe .sh{width:62%;animation-duration:1.2s}
+.costume{position:absolute;left:50%;top:-14%;font-size:34px;font-size:clamp(28px,20cqh,44px);line-height:1;transform:translateX(-50%);animation:costume .5s cubic-bezier(.2,1.6,.4,1);filter:drop-shadow(0 0 8px var(--yellow));z-index:3}
+.foe{position:absolute;right:9%;bottom:8%;height:80%;height:min(80%,44cqw);aspect-ratio:1;display:grid;place-items:center;z-index:2}
+.foe .aura{position:absolute;width:92%;aspect-ratio:1;border-radius:50%;background:radial-gradient(circle,var(--aura) 0,transparent 68%);opacity:.85;animation:aura 2.4s ease-in-out infinite}
+.foe-emo{position:relative;font-size:clamp(56px,13vh,110px);font-size:min(62cqh,32cqw,140px);line-height:1;transform-origin:50% 100%;filter:drop-shadow(0 0 12px var(--aura));transition:filter .8s;animation:squash 1s ease-in-out infinite}
+.foe-emo.f-float{animation:floaty 3s ease-in-out infinite}
+.foe-emo.f-hop{animation:squash .85s ease-in-out infinite,glitch 2.6s steps(1) infinite}
+.foe-emo.f-wobble{animation:wobble 1.7s ease-in-out infinite}
+.foe-emo.f-pulse{animation:pulse 1.1s ease-in-out infinite}
+.foe-emo.f-sway{transform-origin:50% 90%;animation:sway 1.5s ease-in-out infinite}
+.badge{position:absolute;top:-4%;right:-8%;width:42px;height:42px;border-radius:50%;background:var(--navy);border:3px solid var(--yellow);display:grid;place-items:center;font-size:22px;line-height:1;box-shadow:0 0 14px var(--yellow);z-index:3;animation:bob 1.6s ease-in-out infinite}
+.badge:empty{display:none}
+.fx{position:absolute;inset:0;pointer-events:none;overflow:hidden;z-index:6}
+.proj{position:absolute;left:0;top:0;line-height:1;will-change:transform;filter:drop-shadow(0 0 10px #fff)}
+.pop{position:absolute;font:400 30px/1 var(--arc);white-space:nowrap;letter-spacing:.01em;paint-order:stroke fill}
+.pop.dmg{color:var(--yellow);-webkit-text-stroke:7px #B3001E;text-shadow:0 0 18px #FF8A00}
+.pop.hurt{color:var(--red);-webkit-text-stroke:7px #FFF3A3;text-shadow:0 0 18px var(--red)}
+.pop.heal{color:var(--green);-webkit-text-stroke:7px #06421F;text-shadow:0 0 16px var(--green)}
+.pop.blk{font-size:20px;color:#fff;-webkit-text-stroke:6px #5B23B8;text-shadow:0 0 14px var(--purple)}
+.banner{position:absolute;left:50%;top:40%;font:400 clamp(24px,7vw,40px)/1 var(--arc);color:var(--yellow);-webkit-text-stroke:8px #B3001E;paint-order:stroke fill;text-shadow:0 0 28px #FF8A00;white-space:nowrap}
+.spark{position:absolute;left:0;top:0;line-height:1}
+.ring{position:absolute;left:0;top:0;width:60px;height:60px;border-radius:50%;border:5px solid var(--yellow);box-shadow:0 0 18px var(--yellow),inset 0 0 12px var(--yellow)}
+#flash{position:fixed;inset:0;z-index:70;pointer-events:none;opacity:0}
+
+/* ---------- panel ---------- */
+.panel{background:linear-gradient(#1D0F5C,#120A3C);border:3px solid var(--violet);border-radius:26px;box-shadow:0 0 28px rgba(123,61,255,.55),0 6px 0 #05021A;padding:14px;display:flex;flex-direction:column;gap:14px}
+.panel.locked{pointer-events:none}
+.mission{background:rgba(255,228,77,.09);border:3px solid var(--yellow);border-radius:18px;padding:10px 14px 12px;box-shadow:0 0 14px rgba(255,228,77,.3)}
+.m-tag{display:inline-block;background:var(--yellow);color:var(--navy);border-radius:8px;padding:4px 10px;font:400 12px/1.1 var(--arc);letter-spacing:.08em;margin-bottom:7px}
+.mission p{margin:0;font-size:clamp(16px,3.6vw,19px);font-weight:800;text-wrap:pretty}
+.slots{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px}
+.slot{display:flex;flex-direction:column;gap:6px;min-width:0}
+.slot.solo{grid-column:1/-1}
+.slot-l{display:flex;align-items:center;gap:7px;font:900 11px/1.1 var(--body);letter-spacing:.09em;text-transform:uppercase;color:var(--blue)}
+.slot-l i{flex:none;font-style:normal;width:22px;height:22px;border-radius:50%;background:var(--blue);color:var(--navy);display:grid;place-items:center;font:400 12px/1 var(--arc)}
+.sbox{width:100%;min-height:64px;border:3px dashed #7A5FE8;border-radius:16px;background:#080320;box-shadow:inset 0 4px 14px rgba(0,0,0,.7);padding:8px 10px;display:flex;align-items:center;justify-content:center;gap:8px;text-align:center;font:800 16px/1.15 var(--body);cursor:pointer;color:var(--muted)}
+.sbox:hover{border-color:var(--blue);color:#fff}
+.sbox.active{border-color:var(--green);color:var(--green);background:#062016;animation:slotpulse 1.1s ease-in-out infinite}
+.sbox.hinted{border-color:var(--pink);color:var(--pink);background:#2A0722}
+.sbox.filled{border-style:solid}
+.sbox.snap{animation:snap .35s cubic-bezier(.2,1.7,.4,1)}
+.sbox .e{font-size:22px;line-height:1}
+.sbox.pc{box-shadow:0 5px 0 var(--cd),0 0 20px var(--c);transition:filter .15s}
+.sbox.pc:hover{filter:hue-rotate(-40deg) brightness(1.12) saturate(1.2);color:var(--navy)}
+
+/* puzzle pieces / arcade buttons */
+.pc{--ct:#9AF3FF;--c:#22D3FF;--cd:#0A7F9E;color:var(--navy);
+  background:linear-gradient(rgba(255,255,255,.6),rgba(255,255,255,0) 55%) top/100% 55% no-repeat,linear-gradient(var(--ct),var(--c) 65%);
+  border:3px solid var(--cd)}
+.k0{--ct:#9AF3FF;--c:#22D3FF;--cd:#0A7F9E}
+.k1{--ct:#D9BCFF;--c:#A66BFF;--cd:#5B23B8}
+.k2{--ct:#B9FFD5;--c:#39FF88;--cd:#12904A}
+.k3{--ct:#FFB6F0;--c:#FF56D9;--cd:#A3168B}
+.k4{--ct:#FFF3A3;--c:#FFE44D;--cd:#B39600}
+.k5{--ct:#FFCBA0;--c:#FF8A3D;--cd:#B34A0A}
+.hear{display:none}
+.bank-h{font:900 12px/1 var(--body);letter-spacing:.1em;text-transform:uppercase;color:var(--blue);margin-bottom:-4px}
+.bank{display:flex;flex-wrap:wrap;gap:16px 24px;justify-content:center;padding:4px 10px 6px}
+.blk{position:relative;display:inline-flex;align-items:center;gap:7px;padding:11px 15px;border-radius:14px;font:900 16px/1.1 var(--body);cursor:pointer;touch-action:manipulation;
+  box-shadow:0 5px 0 var(--cd),0 0 14px rgba(255,255,255,.08);transition:transform .1s,filter .15s,box-shadow .15s}
+.blk>*{position:relative}
+.blk::after{content:"";position:absolute;right:-12px;top:50%;width:21px;height:21px;transform:translateY(-50%);border-radius:50%;box-sizing:border-box;background:var(--c);border:3px solid var(--cd);border-left-color:var(--c)}
+.blk::before{content:"";position:absolute;left:-12px;top:50%;width:21px;height:21px;transform:translateY(-50%);border-radius:50%;box-sizing:border-box;background:#160B47;border:3px solid var(--cd);border-right-color:#160B47;z-index:1}
+.blk .e{font-size:21px;line-height:1}
+.blk .tag{font:400 9px/1 var(--arc);letter-spacing:.06em;text-transform:uppercase;background:var(--navy);color:var(--yellow);border-radius:6px;padding:3px 5px}
+.blk.solo{border-style:dashed}
+.blk:hover:not(.used){filter:hue-rotate(-40deg) brightness(1.12) saturate(1.25);transform:translateY(-3px) rotate(-1.5deg);box-shadow:0 8px 0 var(--cd),0 0 26px var(--c)}
+.blk:active:not(.used){transform:translateY(5px);box-shadow:0 0 0 var(--cd),0 0 12px var(--c)}
+.blk.used{background:transparent!important;border:3px dashed #5B47C0;box-shadow:none;opacity:.4;cursor:default}
+.blk.used::before,.blk.used::after{display:none}
+.blk.used>*{visibility:hidden}
+.blk.glow{animation:glow .8s ease-in-out infinite}
+.tipbox{background:rgba(255,79,216,.14);border:2.5px solid var(--pink);border-radius:14px;padding:8px 12px;font-weight:800;text-wrap:pretty}
+.actions{display:flex;gap:10px}
+.actions .btn{flex:1}
+.dock{position:sticky;bottom:calc(8px + env(safe-area-inset-bottom,0px));z-index:5;display:flex;flex-direction:column;gap:10px;margin:0 -6px;padding:8px 6px;background:#120A3C;border-radius:24px;box-shadow:0 -14px 22px #120A3C}
+.dock .chat-b{min-height:0;padding:10px 12px}
+.send{display:flex;align-items:center;justify-content:center;gap:10px;width:100%;padding:16px 14px;border-radius:20px;border:3px solid #D6FFE6;cursor:pointer;
+  font:400 clamp(15px,4.4vw,22px)/1.15 var(--arc);letter-spacing:.02em;text-align:center;color:var(--navy);background:linear-gradient(#9CFFC4,#2BE377);
+  box-shadow:0 7px 0 #0E7A3D,0 0 26px rgba(57,255,136,.7);animation:sendpulse 1.3s ease-in-out infinite;transition:transform .08s,filter .15s}
+.send:hover:not(:disabled){filter:brightness(1.1) saturate(1.2)}
+.send:active:not(:disabled){transform:translateY(7px);box-shadow:0 0 0 #0E7A3D,0 0 14px rgba(57,255,136,.6)}
+.send:disabled{animation:none;filter:grayscale(.85) brightness(.55);box-shadow:0 7px 0 #0A3A20;cursor:not-allowed}
+
+/* ---------- prompt preview (text message) ---------- */
+.chat{background:#0B052E;border:3px solid var(--blue);border-radius:22px;box-shadow:0 0 20px rgba(34,211,255,.4);overflow:hidden}
+.chat-h{display:flex;align-items:center;gap:10px;padding:8px 12px;background:linear-gradient(#251480,#170B55);border-bottom:2px solid rgba(34,211,255,.4)}
+.av{flex:none;width:36px;height:36px;border-radius:50%;background:var(--navy);border:2px solid var(--green);display:grid;place-items:center;font-size:19px;box-shadow:0 0 10px rgba(57,255,136,.6)}
+.chat-h b{display:block;font:400 16px/1.1 var(--disp);letter-spacing:.02em}
+.chat-h small{display:flex;align-items:center;gap:5px;font:800 12px/1 var(--body);color:var(--green)}
+.chat-h small i{width:8px;height:8px;border-radius:50%;background:var(--green);box-shadow:0 0 8px var(--green);animation:core 1.4s ease-in-out infinite}
+.chat-tag{margin-left:auto;font:400 10px/1.2 var(--arc);letter-spacing:.06em;color:var(--navy);background:var(--yellow);border-radius:6px;padding:4px 7px;text-align:center}
+.chat-b{padding:12px;display:flex;flex-direction:column;gap:8px;min-height:110px}
+.msg{max-width:88%;padding:9px 14px;border-radius:18px;font:800 16px/1.3 var(--body);text-wrap:pretty;overflow-wrap:anywhere}
+.msg.new{animation:msgin .3s cubic-bezier(.2,1.5,.4,1)}
+.msg.bot{align-self:flex-start;background:#261585;border:2px solid #4B33C9;border-bottom-left-radius:5px}
+.msg.you{align-self:flex-end;background:linear-gradient(135deg,#1668E8,#6B2FE0);color:#fff;border-bottom-right-radius:5px;min-width:64px;box-shadow:0 0 18px rgba(107,47,224,.7);animation:none}
+.msg.you.draft{border:2px dashed rgba(255,255,255,.8)}
+.msg.you .cur{display:inline-block;width:3px;height:1.05em;background:#fff;margin-left:2px;vertical-align:-3px;animation:caret 1s steps(1) infinite}
+.msg.you [data-ph]:empty::before{content:attr(data-ph);opacity:.75;font-weight:700}
+.stat{align-self:flex-end;font:900 11px/1 var(--body);letter-spacing:.07em;text-transform:uppercase;color:var(--muted)}
+.stat.ok{color:var(--green)}
+.typing{display:inline-flex;gap:5px;padding:4px 2px}
+.typing i{width:9px;height:9px;border-radius:50%;background:var(--purple);animation:dot .8s ease-in-out infinite}
+.typing i:nth-child(2){animation-delay:.15s}.typing i:nth-child(3){animation-delay:.3s}
+
+/* ---------- AI tip sheet ---------- */
+.tipwrap{position:fixed;left:0;right:0;bottom:0;z-index:40;display:flex;justify-content:center;padding:0 12px calc(12px + env(safe-area-inset-bottom,0px));pointer-events:none}
+.tipsheet{pointer-events:auto;width:100%;max-width:580px;max-height:58vh;overflow:auto;background:linear-gradient(#26137A,#12093A);border:4px solid var(--purple);border-radius:26px;box-shadow:0 0 34px rgba(181,123,255,.7),0 8px 0 #05021A;padding:14px;display:flex;flex-direction:column;gap:11px;animation:sheet .45s cubic-bezier(.2,1.4,.4,1)}
+.ts-top{display:flex;flex-wrap:wrap;justify-content:space-between;align-items:center;gap:6px 12px;border-radius:16px;padding:9px 12px;color:var(--navy)}
+.ts-top h2{margin:0;font:400 clamp(20px,5vw,26px)/1.1 var(--arc);letter-spacing:.01em}
+.t-perfect .ts-top{background:linear-gradient(#9CFFC4,#39FF88);box-shadow:0 0 20px rgba(57,255,136,.6)}
+.t-good .ts-top{background:linear-gradient(#9AF3FF,#22D3FF);box-shadow:0 0 20px rgba(34,211,255,.6)}
+.t-weak .ts-top{background:linear-gradient(#FFF3A3,#FFE44D);box-shadow:0 0 20px rgba(255,228,77,.6)}
+.t-blocked .ts-top{background:linear-gradient(#FFB0BF,#FF6A88);box-shadow:0 0 20px rgba(255,61,90,.6)}
+.chips{display:flex;gap:6px;flex-wrap:wrap}
+.chip{background:var(--navy);color:#fff;border-radius:999px;padding:3px 10px;font:900 14px/1.3 var(--body);font-variant-numeric:tabular-nums}
+.ts-tip{display:flex;gap:10px;align-items:flex-start;background:rgba(123,61,255,.3);border:3px solid var(--purple);border-radius:16px;padding:10px 12px}
+.ts-bot{flex:none;width:44px}.ts-bot svg{width:100%;height:auto;display:block}
+.ts-badge{display:inline-block;background:var(--yellow);color:var(--navy);border-radius:8px;padding:3px 9px;font:400 11px/1.2 var(--arc);letter-spacing:.08em;margin-bottom:5px}
+.ts-tip p{margin:0;font-size:16px;font-weight:800;text-wrap:pretty}
+.ts-said{margin:0;font-size:15px;font-weight:700;text-wrap:pretty;color:var(--muted)}
+.ts-said b{font-weight:900;color:#fff}
+details.more{font-size:14px}
+details.more summary{cursor:pointer;font:900 13px/1.2 var(--body);letter-spacing:.06em;text-transform:uppercase;color:var(--blue)}
+.notes{list-style:none;margin:8px 0 0;padding:0;display:flex;flex-direction:column;gap:6px}
+.notes li{display:flex;gap:9px;align-items:flex-start;border:2px solid var(--line);border-radius:12px;padding:6px 9px;background:rgba(10,4,36,.6);font-weight:700}
+.notes .ic{flex:none;font-size:18px;line-height:1.2}
+.notes li.g{border-color:var(--green);background:rgba(57,255,136,.12)}
+.notes li.o{border-color:var(--yellow);background:rgba(255,228,77,.1)}
+.notes li.b{border-color:var(--red);background:rgba(255,61,90,.12)}
+.tipsheet .btn{font:400 22px/1 var(--disp);padding:13px;letter-spacing:.02em}
+
+/* ---------- overlay ---------- */
+.ov{position:fixed;inset:0;z-index:50;background:rgba(5,2,26,.82);display:grid;place-items:center;padding:16px;overflow:auto}
+.modal{background:linear-gradient(#26137A,#12093A);border:4px solid var(--purple);border-radius:30px;box-shadow:0 0 40px rgba(181,123,255,.75),0 8px 0 #05021A;max-width:470px;width:100%;padding:20px 18px 22px;text-align:center;animation:pop .45s cubic-bezier(.2,1.6,.4,1);display:flex;flex-direction:column;align-items:center;gap:10px}
+.modal h2{margin:0;font:400 clamp(32px,9vw,48px)/1.05 var(--arc);letter-spacing:.01em;color:var(--yellow);text-shadow:0 0 8px #fff,0 0 22px #FF8A00,0 0 44px #FF8A00}
+.modal.lose h2{color:var(--blue);text-shadow:0 0 8px #fff,0 0 22px var(--blue),0 0 44px var(--violet)}
+.modal h3{margin:0;font:400 clamp(30px,8vw,40px)/1.05 var(--disp);letter-spacing:.02em}
+.modal .rob{height:118px;filter:drop-shadow(0 0 14px rgba(34,211,255,.7))}.modal .rob svg{height:100%;width:auto;transform-origin:50% 100%;animation:squash 1.1s ease-in-out infinite}
+.modal .rob.sad svg{animation:none;transform:rotate(-8deg)}
+.modal .rob .m-sad{display:none}.modal .rob.sad .m-sad{display:block}.modal .rob.sad .m-happy{display:none}
+.modal .big-emo{font-size:84px;line-height:1;transform-origin:50% 100%;animation:squash 1.2s ease-in-out infinite;filter:drop-shadow(0 0 16px rgba(255,255,255,.6))}
+.modal .ln{font:900 12px/1 var(--body);letter-spacing:.12em;text-transform:uppercase;color:var(--blue)}
+.modal p{margin:0;text-wrap:pretty}
+.stars{font-size:38px;letter-spacing:4px;line-height:1}
+.skill{background:rgba(255,228,77,.1);border:3px solid var(--yellow);border-radius:18px;padding:10px 14px;width:100%}
+.skill b{font:400 22px/1.1 var(--disp);display:block;letter-spacing:.02em}
+.skill small{display:block;font-size:15px;font-weight:700;margin-top:4px;color:var(--muted)}
+.recap{list-style:none;margin:0;padding:0;text-align:left;width:100%;display:flex;flex-direction:column;gap:6px}
+.recap li{background:rgba(57,255,136,.12);border:2px solid var(--green);border-radius:12px;padding:7px 11px;font-weight:800}
+.recap li small{display:block;font-weight:700;color:var(--muted)}
+.mbtns{display:flex;flex-wrap:wrap;gap:10px;justify-content:center;width:100%;margin-top:4px}
+.mbtns .btn.big{flex:1 1 100%;font-size:24px}
+.grp{margin:26px 0 0;font:400 22px/1.1 var(--disp);letter-spacing:.03em;color:var(--blue);text-shadow:0 0 12px rgba(34,211,255,.5)}
+.prog-n{color:var(--green);white-space:nowrap}
+.lc.boss{animation:bossglow 2s ease-in-out infinite}
+.lc.boss .lc-n{background:var(--red);color:#fff;border-color:#FFC7D0}
+.lc.mini .lc-n{background:var(--purple);color:#fff;border-color:#E6D9FF}
+.lc.premium{opacity:.92}
+.lc.premium .em{filter:none}
+.btn.hot[data-buy]{font-size:14px}
+.pw-banner{background:linear-gradient(#3A1770,#1E0E52);border:3px solid var(--pink);border-radius:20px;padding:14px 16px;margin:14px 0 4px;box-shadow:0 0 22px rgba(255,79,216,.4);display:flex;flex-wrap:wrap;align-items:center;gap:10px 14px}
+.pw-banner p{margin:0;flex:1 1 220px;font-weight:800}
+.pw-banner .btn{flex:none}
+.gate-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;width:100%}
+.gate-grid .btn{font:400 22px/1 var(--disp);padding:14px}
+.gate-msg{margin:0;color:var(--yellow);font-weight:900}
+.recap{max-height:34vh;overflow:auto;padding-right:4px}
+.conf{position:fixed;top:-24px;z-index:60;width:10px;height:15px;border-radius:2px;animation:fall 3.2s linear forwards;pointer-events:none}
+
+/* ---------- motion ---------- */
+@keyframes squash{
+  0%,100%{transform:translateY(0) scale(1.07,.93)}
+  22%{transform:translateY(-15px) scale(.95,1.06)}
+  50%{transform:translateY(-19px) scale(1,1)}
+  80%{transform:translateY(-3px) scale(1.02,.98)}
+}
+@keyframes shadowbob{0%,100%{transform:translateX(-50%) scale(1.05);opacity:.55}50%{transform:translateX(-50%) scale(.6);opacity:.25}}
+@keyframes floaty{0%,100%{transform:translateY(0) rotate(-4deg) scale(1,1)}25%{transform:translateY(-14px) rotate(0deg) scale(.97,1.04)}50%{transform:translateY(-20px) rotate(4deg) scale(1,1)}75%{transform:translateY(-8px) rotate(0deg) scale(1.03,.97)}}
+@keyframes sway{0%,100%{transform:rotate(-8deg) translateY(0) scale(1.04,.96)}50%{transform:rotate(8deg) translateY(-12px) scale(.96,1.05)}}
+@keyframes bob{0%,100%{transform:translateY(0)}50%{transform:translateY(-6px)}}
+@keyframes blink{0%,94%,100%{transform:scaleY(1)}97%{transform:scaleY(.1)}}
+@keyframes wig{0%,100%{transform:rotate(-12deg)}50%{transform:rotate(12deg)}}
+@keyframes core{0%,100%{opacity:1}50%{opacity:.45}}
+@keyframes aura{0%,100%{transform:scale(.92)}50%{transform:scale(1.08)}}
+@keyframes twinkle{0%,100%{opacity:.35}50%{opacity:1}}
+@keyframes slotpulse{0%,100%{box-shadow:inset 0 4px 14px rgba(0,0,0,.7),0 0 0 rgba(57,255,136,0)}50%{box-shadow:inset 0 4px 14px rgba(0,0,0,.7),0 0 20px rgba(57,255,136,.8)}}
+@keyframes snap{0%{transform:scale(.6) rotate(-6deg)}100%{transform:none}}
+@keyframes glow{0%,100%{box-shadow:0 5px 0 var(--cd),0 0 0 0 rgba(255,255,255,.95)}50%{box-shadow:0 5px 0 var(--cd),0 0 0 10px rgba(255,255,255,0)}}
+@keyframes sendpulse{0%,100%{box-shadow:0 7px 0 #0E7A3D,0 0 18px rgba(57,255,136,.55)}50%{box-shadow:0 7px 0 #0E7A3D,0 0 38px rgba(57,255,136,1)}}
+@keyframes caret{0%,49%{opacity:1}50%,100%{opacity:0}}
+@keyframes msgin{0%{transform:translateY(12px) scale(.9);opacity:0}100%{transform:none;opacity:1}}
+@keyframes dot{0%,100%{transform:translateY(0)}50%{transform:translateY(-7px)}}
+@keyframes pop{0%{transform:scale(.6);opacity:0}100%{transform:scale(1);opacity:1}}
+@keyframes sheet{0%{transform:translateY(60%);opacity:0}100%{transform:none;opacity:1}}
+@keyframes costume{0%{transform:translateX(-50%) translateY(-30px) scale(.3);opacity:0}100%{transform:translateX(-50%);opacity:1}}
+@keyframes glitch{0%,90%,100%{filter:drop-shadow(0 0 12px var(--aura))}92%{filter:hue-rotate(120deg) contrast(1.6) drop-shadow(4px 0 0 #FF3D5A)}95%{filter:hue-rotate(250deg) drop-shadow(-4px 0 0 #22D3FF)}97%{filter:invert(.25) drop-shadow(0 0 12px var(--aura))}}
+@keyframes neon{0%,100%{text-shadow:0 0 6px #fff,0 0 16px var(--blue),0 0 34px var(--violet),0 0 64px var(--violet)}50%{text-shadow:0 0 4px #fff,0 0 12px var(--blue),0 0 26px var(--violet),0 0 46px var(--violet)}}
+@keyframes flicker{0%,93%,97%,100%{opacity:1}94%,96%{opacity:.55}}
+@keyframes wobble{0%,100%{transform:rotate(-7deg) translateY(0) scale(1.05,.95)}50%{transform:rotate(7deg) translateY(-14px) scale(.96,1.05)}}
+@keyframes pulse{0%,100%{transform:translateY(0) scale(1)}50%{transform:translateY(-12px) scale(1.09)}}
+@keyframes bossglow{0%,100%{box-shadow:0 0 22px var(--nc),0 6px 0 #05021A}50%{box-shadow:0 0 44px var(--nc),0 6px 0 #05021A}}
+@keyframes fall{to{transform:translateY(112vh) rotate(720deg)}}
+@keyframes rise{0%{transform:translateY(8px);opacity:0}100%{transform:none;opacity:1}}
+@media (prefers-reduced-motion:reduce){
+  *{animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important}
+}
+@media (max-width:480px){
+  .btn.big{font-size:22px;padding:14px 22px}
+  .slots{grid-template-columns:1fr 1fr}
+  .slot.solo{grid-column:1/-1}
+  .bank{gap:14px 22px}
+  .chat-tag{display:none}
+  .send{padding:14px 10px}
+}
+
+/* ---------- install hint (iPad / iPhone Safari only) ---------- */
+.install{display:flex;align-items:center;gap:12px;max-width:560px;margin:22px auto 0;padding:12px 14px;text-align:left;background:rgba(34,211,255,.12);border:3px solid var(--blue);border-radius:20px;box-shadow:0 0 18px rgba(34,211,255,.4)}
+.install .ins-ic{flex:none;width:42px;height:42px;border-radius:12px;background:var(--blue);color:var(--navy);display:grid;place-items:center;font-size:22px;font-weight:900}
+.install div:nth-child(2){flex:1;font-weight:800;text-wrap:pretty}
+.install b{display:block;font:400 19px/1.1 var(--disp);letter-spacing:.02em}
+.install .btn{flex:none}
+
+/* ---------- tablets ---------- */
+@media (min-width:700px){
+  .wrap{max-width:1040px}
+  .blk{font-size:18px;padding:13px 19px}
+  .blk .e{font-size:23px}
+  .sbox{min-height:74px;font-size:18px}
+  .msg{font-size:18px}
+  .mission p{font-size:20px}
+  .bank{gap:18px 28px}
+  .btn.sm{padding:11px 16px;font-size:15px}
+}
+@media (min-width:700px) and (orientation:portrait){
+  .arena{height:clamp(300px,31vh,400px)}
+}
+/* iPad landscape: arena on the left, puzzle on the right */
+@media (min-width:900px) and (orientation:landscape){
+  .wrap.battle{max-width:1200px;display:grid;grid-template-columns:minmax(0,5fr) minmax(0,6fr);gap:20px;align-items:start}
+  .wrap.battle .top{position:sticky;top:env(safe-area-inset-top,0px);padding-bottom:0;background:none}
+  .wrap.battle .arena{height:clamp(300px,calc(100vh - 150px),520px)}
+  .tipwrap{justify-content:flex-end;padding-right:max(16px,calc((100vw - 1200px)/2 + 16px))}
+  .tipsheet{max-width:min(600px,54vw)}
+}
+</style>
+</head>
+<body>
+<div class="wrap" id="app"></div>
+<div id="ov-root"></div>
+<div id="flash"></div>
+<script>
+(function(){
+'use strict';
+/* ================= helpers ================= */
+var $=function(s,r){return (r||document).querySelector(s)};
+var RM=window.matchMedia&&matchMedia('(prefers-reduced-motion: reduce)').matches;
+var wait=function(ms){return new Promise(function(r){setTimeout(r,RM?Math.min(ms,120):ms)})};
+var rnd=function(a,b){return a+Math.random()*(b-a)};
+function shuffle(a){a=a.slice();for(var i=a.length-1;i>0;i--){var j=Math.floor(Math.random()*(i+1));var t=a[i];a[i]=a[j];a[j]=t}return a}
+var app=$('#app'),ovRoot=$('#ov-root');
+
+/* ================= sound ================= */
+var AC=null,muted=false;
+function tone(f,d,type,v,t0,f2){
+  if(muted)return;
+  try{
+    AC=AC||new (window.AudioContext||window.webkitAudioContext)();
+    if(AC.state==='suspended')AC.resume();
+    var t=AC.currentTime+(t0||0),o=AC.createOscillator(),g=AC.createGain();
+    o.type=type||'sine';o.frequency.setValueAtTime(f,t);
+    if(f2)o.frequency.exponentialRampToValueAtTime(f2,t+d);
+    g.gain.setValueAtTime(v||.07,t);g.gain.exponentialRampToValueAtTime(.001,t+d);
+    o.connect(g);g.connect(AC.destination);o.start(t);o.stop(t+d+.03);
+  }catch(e){}
+}
+var sfx={
+  click:function(){tone(520,.08,'triangle',.06)},
+  type:function(){tone(900+Math.random()*200,.03,'square',.015)},
+  place:function(){tone(620,.1,'triangle',.08,0,900)},
+  remove:function(){tone(460,.09,'triangle',.06,0,300)},
+  send:function(){tone(400,.25,'sawtooth',.05,0,1500)},
+  zap:function(){tone(300,.35,'sawtooth',.04,0,1300)},
+  hit:function(){tone(220,.22,'square',.07,0,70)},
+  perfect:function(){[523,659,784,1047].forEach(function(f,i){tone(f,.2,'triangle',.08,i*.09)})},
+  block:function(){tone(170,.3,'square',.05,0,90)},
+  hurt:function(){tone(280,.3,'sawtooth',.05,0,90)},
+  tip:function(){tone(880,.12,'sine',.07);tone(1175,.16,'sine',.07,.1)},
+  win:function(){[523,659,784,659,784,1047].forEach(function(f,i){tone(f,.22,'triangle',.09,i*.11)})},
+  lose:function(){[392,330,262].forEach(function(f,i){tone(f,.35,'sine',.08,i*.22)})}
+};
+
+/* ================= progress ================= */
+var KEY='promptFighterV2';
+var FREE_LEVELS=15; // levels 1..FREE_LEVELS unlock for free by playing; the rest need prog.premium
+var PRICE='$4.99'; // shown on the paywall card; update to match your App Store Connect price
+function loadProg(){try{var j=JSON.parse(localStorage.getItem(KEY));if(j&&j.unlocked)return j}catch(e){}return{unlocked:1,stars:{},premium:false}}
+var prog=loadProg();
+// the native iOS app fires this once, on launch, if RevenueCat already
+// knows the player owns the pack (a restore, a reinstall, family sharing…)
+window.addEventListener('pf-already-premium',function(){
+  if(!prog.premium){prog.premium=true;saveProg();if(S===null)try{showSelect()}catch(e){}}
+});
+function fixProg(){for(var k in prog.stars){if(prog.stars[k])prog.unlocked=Math.max(prog.unlocked,+k+1)}prog.unlocked=Math.min(prog.unlocked,LEVELS.length)}
+function saveProg(){try{localStorage.setItem(KEY,JSON.stringify(prog))}catch(e){}}
+function isPremiumLevel(n){return n>FREE_LEVELS}
+function isLocked(n){
+  if(n>prog.unlocked)return 'progress'; // haven't beaten the level before it yet
+  if(isPremiumLevel(n)&&!prog.premium)return 'premium'; // behind the Prompt Master Pack
+  return null;
+}
+/* ---- purchase bridge ----
+   On the web/artifact/PWA this stays a harmless demo so you can preview the
+   paywall. Inside the native iOS app (Capacitor), define window.PFPurchase
+   and window.PFRestore before this script runs (see the iOS project's
+   www/index.html) and they'll be used instead automatically. */
+function tryUnlockPremium(){
+  sfx.click();
+  if(window.PFPurchase){
+    ovRoot.querySelectorAll('[data-o=buy]').forEach(function(b){b.disabled=true;b.textContent='Talking to the App Store…'});
+    window.PFPurchase().then(function(ok){
+      if(ok){prog.premium=true;saveProg();closeOv();showSelect()}
+      else showSelect();
+    }).catch(function(){showSelect()});
+    return;
+  }
+  showPaywall();
+}
+function tryRestorePremium(){
+  sfx.click();
+  if(window.PFRestore){
+    window.PFRestore().then(function(ok){if(ok){prog.premium=true;saveProg();closeOv();showSelect()}else closeOv()}).catch(function(){closeOv()});
+  }else closeOv();
+}
+function showPaywall(){
+  var demo=/[?&]demo=1/.test(location.search),native=!!window.PFPurchase;
+  ovRoot.innerHTML='<div class="ov"><div class="modal" role="dialog" aria-modal="true">'+
+    '<div class="big-emo">🔓</div><h3>Prompt Master Pack</h3>'+
+    '<p><b>Unlock levels 16–25</b> — 10 more monsters and 10 more real AI skills, all in one purchase ('+PRICE+').</p>'+
+    (native?'':'<div class="skill"><b>🍏 This unlocks in the iPhone/iPad app</b><small>Purchases only work inside the App Store version of Prompt Fighter, not on this preview.</small></div>')+
+    '<div class="mbtns"><button class="btn go big" data-o="buy"'+(native?'':' disabled')+'>🔓 Unlock for '+PRICE+'</button>'+
+    (native?'<button class="btn sm" data-o="restore">Restore purchase</button>':'')+
+    (demo?'<button class="btn sm" data-o="demobuy">🧪 Demo unlock (testing only)</button>':'')+
+    '<button class="btn" data-o="select">Back to levels</button></div></div></div>';
+  ovRoot.querySelectorAll('[data-o]').forEach(function(b){
+    b.onclick=function(){
+      var o=b.dataset.o;
+      if(o==='buy')showParentGate(tryUnlockPremium);
+      else if(o==='restore')tryRestorePremium();
+      else if(o==='demobuy'){sfx.click();prog.premium=true;saveProg();closeOv();showSelect()}
+      else{sfx.click();showSelect()}
+    };
+  });
+  var f=ovRoot.querySelector('.btn.big')||ovRoot.querySelector('.btn');f&&f.focus({preventScroll:true});
+}
+/* ---- parental gate ----
+   Apple's Kids Category rules require any purchase button to sit behind a
+   gate a young child can't casually get past. A quick grown-up-level math
+   question does the job; onPass() runs only after a correct answer. */
+function showParentGate(onPass,msg){
+  var a=2+Math.floor(Math.random()*8),b=2+Math.floor(Math.random()*8),correct=a*b;
+  var opts=[correct];
+  while(opts.length<4){
+    var d=correct+(Math.floor(Math.random()*11)-5);
+    if(d>0&&opts.indexOf(d)<0)opts.push(d);
+  }
+  opts=shuffle(opts);
+  ovRoot.innerHTML='<div class="ov"><div class="modal" role="dialog" aria-modal="true">'+
+    '<div class="big-emo">🧑‍👧</div><h3>Grown-Ups Only</h3>'+
+    '<p><b>This step needs a parent or guardian.</b> Solve this to continue:</p>'+
+    '<div class="skill"><b style="font-size:26px">'+a+' × '+b+' = ?</b></div>'+
+    '<div class="mbtns gate-grid">'+opts.map(function(n){return '<button class="btn go" data-n="'+n+'">'+n+'</button>'}).join('')+'</div>'+
+    (msg?'<p class="gate-msg">'+msg+'</p>':'')+
+    '<div class="mbtns"><button class="btn" data-o="cancel">Cancel</button></div></div></div>';
+  ovRoot.querySelectorAll('[data-n]').forEach(function(b){
+    b.onclick=function(){
+      sfx.click();
+      if(+b.dataset.n===correct){closeOv();onPass()}
+      else showParentGate(onPass,'Not quite — try again.');
+    };
+  });
+  $('[data-o=cancel]',ovRoot).onclick=function(){sfx.click();showPaywall()};
+  var f=ovRoot.querySelector('.btn.go');f&&f.focus({preventScroll:true});
+}
+
+/* ================= game content ================= */
+var SL={
+  'do':{label:'What to do'},'with':{label:'With what'},at:{label:'Aim at'},
+  role:{label:'Give a role'},act:{label:'Then'},move:{label:'The spell'},
+  mv:{label:'Your move'},rule:{label:'Add a rule'},ban:{label:'What NOT to do'},
+  exp:{label:'What to explain'},aud:{label:'For who'},tone:{label:'In what voice'},
+  ask:{label:'What you need'},fmt:{label:'Pick a format'},size:{label:'Set the size'},
+  job:{label:'The job'},ex:{label:'Show examples'},out:{label:'Shape the answer'},
+  puz:{label:'The puzzle'},think:{label:'How to think'},chk:{label:'Then double-check'},
+  s1:{label:'Step 1'},s2:{label:'Step 2'},s3:{label:'Step 3'},
+  q:{label:'Ask'},idk:{label:'Allow “I don’t know”'},ver:{label:'Check the facts'},
+  keep:{label:'Keep the good'},fix:{label:'Fix the bad'},add:{label:'Add something new'},
+  ctx:{label:'Give the background'},first:{label:'Most important first'},same:{label:'In the same style'},
+  cmp:{label:'Compare it to'},shrink:{label:'Make it short'},and2:{label:'Then also ask for'},
+  priv:{label:'Keep this private'},persp:{label:'Ask for another view'},limit:{label:'Remind it what it can’t know'},
+  fb:{label:'Ask it to check for'},one:{label:'Suggest just one fix'},use1:{label:'Using step 1’s answer'}
+};
+/* block = [text, emoji, quality(2 best / 1 okay / 0 vague), why]
+   solo  = [text, emoji, why]  (an all-in-one, one-block prompt: always a weak result) */
+var LEVELS=[
+/* ---------------- LEVEL 1 · SPECIFICITY ---------------- */
+{name:'Vague Ghost',emoji:'👻',atk:'🌫️',aura:'#9FB4FF',blur:true,anim:'f-float',
+ concept:'Specificity',skill:'Be Precise',
+ lesson:'Vague prompts give poor results.',
+ how:'Build a super specific attack. The more exact your words, the more damage you do. Watch the ghost come into focus!',
+ hp:60,dmg:{perfect:20,good:12,weak:5,blocked:0},cnt:{perfect:0,good:5,weak:10,blocked:15},heal:6,pi:1,
+ th:{s1:'#17106B',s2:'#4A63FF',g:'#2A3DB0',nc:'#22D3FF',deco:'☁️'},
+ part:'Nice try! Your prompt had some details, but one piece was still fuzzy. Swap it for an exact one and you’ll hit for full damage!',
+ weak:'Fuzzy prompts get fuzzy results. Short prompts leave the AI guessing: which weapon? Aimed where? Add exact details and try again. You’ve got this!',
+ cs:[
+ {story:'👑 Vague Ghost’s power is hidden in his glowing crown! Fuzzy attacks barely tickle him. Build a precise attack.',badge:'👑',slots:['do','with','at'],
+  ok:'Swing + Iron Sword + glowing crown = no guessing! Every detail told the AI exactly what to do, with what, and where. That’s why it did 4× the damage of “Attack with sword”.',
+  solo:['Attack with sword','⚔️','One short block tries to say everything. Which sword? Aimed where? The AI has to guess.'],
+  b:{'do':[['Swing','⚔️',2,'“Swing” is a clear, exact action.'],['Wave','👋',1,'Clear, but waving won’t hurt a ghost.'],['Do a move','🤷',0,'“Do a move” could mean anything!']],
+     'with':[['an Iron Sword','🗡️',2,'A specific weapon. No guessing!'],['a Wooden Spoon','🥄',1,'Specific, but a spoon is a silly ghost-fighter.'],['a thing','📦',0,'“A thing” could be anything at all.']],
+     at:[['at the ghost’s glowing crown','👑',2,'You aimed at the exact weak spot!'],['at the ghost','👻',1,'Clear, but the ghost is big. Which part?'],['at it','👉',0,'“It”? What is “it”?']]}},
+ {story:'🔑 Vague Ghost keeps his magic in a shiny golden key on his belt. Aim carefully!',badge:'🔑',slots:['do','with','at'],
+  ok:'“Golden Arrow” and “shiny belt key” are precise details. Precise words help an AI hit the exact thing you mean.',
+  solo:['Shoot an arrow','🏹','Which arrow? Aimed at what? Short prompts leave the AI guessing.'],
+  b:{'do':[['Fire','🎯',2,'“Fire” is a clear action.'],['Toss','🤾',1,'Clear, but tossing isn’t precise.'],['Try stuff','🤔',0,'“Try stuff” doesn’t tell Beep what to do.']],
+     'with':[['a Golden Arrow','🏹',2,'A specific weapon, right for the job.'],['a Wooden Spoon','🥄',1,'Specific, but too silly to help.'],['a thing','📦',0,'“A thing”? Which thing?']],
+     at:[['at the ghost’s shiny belt key','🔑',2,'Exactly where his power is stored!'],['at the ghost','👻',1,'Clear, but the power is in the key.'],['at it','👉',0,'“It”? What is “it”?']]}},
+ {story:'🎩 Vague Ghost is hiding in thick fog! Only his floating top hat pokes out.',badge:'🎩',slots:['do','with','at'],
+  ok:'“Frozen” and “floating hat” are small details that make a big difference. The more exact your words, the better your results!',
+  solo:['Throw a snowball','❄️','Which snowball? Thrown at what? The AI had to guess.'],
+  b:{'do':[['Throw','🤾',2,'“Throw” is clear and exact.'],['Wave','👋',1,'Clear, but waving won’t hurt.'],['Try stuff','🤔',0,'“Try stuff” — what stuff?']],
+     'with':[['a Frozen Snowball','❄️',2,'“Frozen” is a great detail!'],['a Soft Pillow','🛏️',1,'Specific, but too soft to hurt a ghost.'],['a thing','📦',0,'“A thing” could be anything.']],
+     at:[['at the ghost’s floating hat','🎩',2,'You aimed at the exact part you can see!'],['at the fog','🌫️',1,'Clear, but the fog isn’t the ghost.'],['over there','👈',0,'“Over there” — where?']]}}
+ ]},
+/* ---------------- LEVEL 2 · PERSONA ---------------- */
+{name:'Glitch Code Monster',emoji:'👾',atk:'🐛',aura:'#39FF88',anim:'f-hop',role:true,
+ concept:'Persona',skill:'Give a Role',
+ lesson:'Telling an AI to act as an expert makes it smarter.',
+ how:'Before you cast anything, give Beep a ROLE. “Act as a…” an expert. Then finish the prompt with a clear action and move.',
+ hp:75,dmg:{perfect:25,good:15,weak:6,blocked:0},cnt:{perfect:0,good:6,weak:12,blocked:18},heal:6,pi:2,
+ th:{s1:'#04213A',s2:'#0FA36B',g:'#0B6B55',nc:'#39FF88',deco:'💾'},
+ part:'Good thinking! A role helps most when it fits the job. Check each piece: the right expert, the right action, the right move.',
+ weak:'Without a role, the AI answers like just anybody. Start with “Act as a…” and an expert, and it will think and respond like that expert. Give it a try!',
+ cs:[
+ {story:'🧙 The Glitch Code Monster is throwing scrambled code at Beep! Give Beep a ROLE first, then cast a spell.',badge:'💥',slots:['role','act','move'],
+  ok:'“Act as a Master Wizard” switched on wizard-level thinking. Giving an AI an expert role makes its answers smarter and more focused. Real chatbots work the same way!',
+  solo:['Cast Lightning Bolt','⚡','No role! The AI answers like anybody. An expert role makes it smarter.'],
+  b:{role:[['Act as a Master Wizard','🧙',2,'A wizard is the perfect expert for spells!'],['Act as a Sleepy Kitten','😴',1,'A role! But a sleepy kitten isn’t an expert in lightning.'],['Act as anybody','🙂',0,'“Anybody” isn’t an expert. The AI stays average.']],
+     act:[['and cast','🪄',2,'“and cast” connects the role to an action.'],['and wave','👋',1,'A wizard could wave, but waving doesn’t cast a spell.'],['and do','🤷',0,'“And do” — do what? Say the action!']],
+     move:[['Lightning Bolt','⚡',2,'A specific spell. No guessing!'],['Tiny Spark','✨',1,'Clear, but too small for a wizard.'],['Some Magic','🎩',0,'“Some Magic” — which magic?']]}},
+ {story:'🐛 There’s a BUG hiding deep inside the monster’s code! Give Beep an expert role, then hunt it down.',badge:'🐛',slots:['role','act','move'],
+  ok:'Detectives are great at finding hidden things, just like bugs! Matching the role to the job makes the AI far more useful.',
+  solo:['Find the bug','🐛','No role! Naming an expert helps the AI think like one.'],
+  b:{role:[['Act as a Master Code Detective','🕵️',2,'A detective finds hidden clues, and bugs are hidden clues!'],['Act as a Pastry Chef','🧁',1,'A role, but chefs bake. They don’t debug!'],['Act as somebody','🙂',0,'“Somebody” isn’t an expert.']],
+     act:[['and hunt down','🔍',2,'“Hunt down” is a clear action.'],['and stare at','👀',1,'Staring doesn’t fix anything.'],['and do','🤷',0,'“And do” — do what?']],
+     move:[['the Hidden Bug','🐛',2,'The exact target!'],['the Whole Computer','💻',1,'Clear, but too big. Aim for the bug!'],['some code','📄',0,'“Some code” — which code?']]}},
+ {story:'🧩 The monster scrambled its secret code into a giant puzzle! Give Beep an expert role to unscramble it.',badge:'🧩',slots:['role','act','move'],
+  ok:'Codebreakers are experts at puzzles. When you name the right expert, the AI answers the way that expert would!',
+  solo:['Crack the code','🔓','No role! An expert role would make the AI sharper.'],
+  b:{role:[['Act as a Genius Codebreaker','🧠',2,'A codebreaker is the perfect expert here!'],['Act as a Sleepy Sloth','🦥',1,'A role, but sloths aren’t known for speedy puzzles.'],['Act as a helper','🙂',0,'“A helper” — helper of what? Experts get better results.']],
+     act:[['and crack','🔓',2,'“Crack” is exact and clear.'],['and bump','👊',1,'Bumping won’t crack a code.'],['and try','🤔',0,'“And try” — try what?']],
+     move:[['the Scrambled Code','🧩',2,'The exact puzzle!'],['the Floor','🟫',1,'Clear, but the floor isn’t the puzzle.'],['a thing','📦',0,'“A thing” could be anything.']]}}
+ ]},
+/* ---------------- LEVEL 3 · CONSTRAINTS ---------------- */
+{name:'Copycat Mimic',emoji:'🎭',atk:'🔥',aura:'#FF4FD8',anim:'f-sway',mimic:true,
+ concept:'Context & Guardrails',skill:'Add Guardrails',
+ lesson:'Setting rules or constraints limits bad AI behavior.',
+ how:'The Mimic steals any move you make and sends it back, unless you add a RULE. Tell Beep what NOT to do!',
+ hp:90,dmg:{perfect:30,good:18,weak:8,blocked:0},cnt:{perfect:0,good:8,weak:16,blocked:22},heal:6,pi:0,
+ th:{s1:'#33106B',s2:'#E23BC8',g:'#8A1B84',nc:'#FF4FD8',deco:'🪞'},
+ part:'You’re using rules, great! But a guardrail only works when it’s firm and about the real problem. Double-check your rule.',
+ weak:'With no rule, the AI does whatever it wants, and the Mimic copied your move! Guardrails like “but do not…” tell the AI what to avoid.',
+ cs:[
+ {story:'🪞 The Mimic’s mirror steals any move and turns it around to look backward at Beep! Add a rule to stop the copying.',badge:'🪞',slots:['mv','rule','ban'],
+  ok:'“But do not look backward” is a guardrail. It told the AI what to AVOID, so the Mimic had nothing to copy. Rules keep AI safe and on task!',
+  solo:['Fireball, go!','🔥','No rules! The Mimic can copy this move and send it right back.'],
+  b:{mv:[['Launch Fireball','🔥',2,'A clear move.'],['Launch Ball','⚽',1,'Clear, but a plain ball won’t hurt the Mimic.'],['Do a move','🤷',0,'“Do a move” could mean anything!']],
+     rule:[['but do not','🚫',2,'“But do not” is a firm guardrail.'],['but try not to','🙏',1,'Polite, but soft. An AI may ignore it. Firm rules work better.'],['and also','➕',0,'“And also” ADDS more. It doesn’t limit anything.']],
+     ban:[['look backward','🔄',2,'Exactly the bad behavior to stop!'],['look sideways','↔️',1,'A rule, but the problem is looking BACKWARD.'],['be silly','🤪',0,'“Be silly”… rules must clearly name what to avoid.']]}},
+ {story:'💔 The Mimic copies your move and throws it right back! Any move with NO rules gets stolen. Add a guardrail so the copy can’t hurt Beep.',badge:'🪞',slots:['mv','rule','ban'],
+  ok:'“But do not hurt Beep” set a clear limit. Good guardrails name the exact thing to avoid, so a copied move can’t cause harm.',
+  solo:['Freeze ray, go!','🧊','No rules! If the Mimic copies this, Beep gets frozen.'],
+  b:{mv:[['Fire a Freeze Ray','🧊',2,'A clear, powerful move.'],['Fire a Squirt Gun','🔫',1,'Clear, but a squirt gun barely tickles.'],['Fire something','🎲',0,'“Something” — what?']],
+     rule:[['but do not','🚫',2,'A firm guardrail.'],['but try not to','🙏',1,'Polite, but soft. Firm rules work better.'],['and also','➕',0,'“And also” ADDS more. It doesn’t limit anything.']],
+     ban:[['hurt Beep','💔',2,'A rule that protects YOU. Exactly the risk!'],['make loud noises','🔊',1,'A rule, but noise isn’t the danger here.'],['do wrong things','🙈',0,'“Wrong things” — which things?']]}},
+ {story:'🐰 The Mimic is hiding behind three bunnies and will copy anything you do! Keep the bunnies safe with a clear rule.',badge:'🐰',slots:['mv','rule','ban'],
+  ok:'“But never touch the bunnies” protected everybody. Constraints are like fences: they keep the AI inside safe boundaries.',
+  solo:['Wind blast, go!','🌬️','No rules! A wild blast could hurt the bunnies (and get copied).'],
+  b:{mv:[['Send a Wind Blast','🌬️',2,'A clear move.'],['Send a Tornado','🌪️',1,'Clear, but a tornado is way too wild near bunnies.'],['Send stuff','🎁',0,'“Stuff” — what stuff?']],
+     rule:[['but never','⛔',2,'“But never” is a strong, firm rule.'],['but try not to','🙏',1,'Polite, but soft. Firm rules work better.'],['and also','➕',0,'“And also” ADDS more. It doesn’t limit anything.']],
+     ban:[['touch the bunnies','🐰',2,'Protects exactly who needs protecting!'],['touch the ground','🟫',1,'A rule, but the bunnies are what matter.'],['do anything bad','🙈',0,'“Anything bad” — what counts as bad? Be clear.']]}}
+ ]},
+/* ---------------- LEVEL 4 · AUDIENCE & TONE ---------------- */
+{name:'Jargon Squid',emoji:'🦑',atk:'🫧',aura:'#22D3FF',anim:'f-wobble',
+ concept:'Audience & Tone',skill:'Know Your Audience',
+ lesson:'Tell the AI who it’s talking to and how to sound.',
+ how:'The Jargon Squid speaks in giant, confusing words. Tell Beep WHAT to explain, WHO it is for, and what VOICE to use!',
+ hp:100,dmg:{perfect:34,good:20,weak:9,blocked:0},cnt:{perfect:0,good:9,weak:18,blocked:24},heal:6,pi:0,
+ th:{s1:'#04304F',s2:'#0E86C4',g:'#0A5A8F',nc:'#22D3FF',deco:'🫧'},
+ part:'Almost! Check who is listening and how you want it to sound. The right audience and voice make an answer easy to understand.',
+ weak:'When you don’t say who the answer is for, the AI has to guess, and it might use giant confusing words. Name your audience and your voice!',
+ cs:[
+ {story:'🌀 The Jargon Squid is spouting giant science words! Make Beep explain black holes so a little kid could understand.',badge:'🕳️',slots:['exp','aud','tone'],
+  ok:'“To a 6-year-old” and “friendly, simple voice” told the AI who was listening and how to sound. The same facts can be explained a hundred ways. Audience and tone pick the best one!',
+  solo:['Explain black holes','🌌','No audience and no voice! The AI has to guess how fancy to sound.'],
+  b:{exp:[['Explain what a black hole is','🕳️',2,'A clear topic. The AI knows exactly what to explain.'],['Explain space','🌌',1,'Clear, but “space” is huge. Which part?'],['Tell me stuff','🤷',0,'“Stuff”? Which stuff?']],
+     aud:[['to a 6-year-old','🧒',2,'Now the AI knows to keep it simple!'],['to a rocket scientist','👩‍🚀',1,'An audience! But experts get jargon, not kid words.'],['to whoever','🙂',0,'“Whoever” means the AI must guess who is listening.']],
+     tone:[['in a friendly, simple voice','😊',2,'Friendly and simple is perfect for kids!'],['in a super fancy voice','🎩',1,'A voice, but fancy words would confuse a kid.'],['in some way','🎲',0,'“Some way” doesn’t tell the AI how to sound.']]}},
+ {story:'🌋 The Squid’s tentacles are tangled up in volcano facts! Ask Beep to explain how volcanoes erupt to a whole class.',badge:'🌋',slots:['exp','aud','tone'],
+  ok:'Kids listen when the voice is fun and the words fit their age. Telling the AI your audience AND your tone gets an answer made just for them!',
+  solo:['Explain volcanoes','💬','No audience and no voice! The AI can’t tell who it’s helping.'],
+  b:{exp:[['Explain how a volcano erupts','🌋',2,'A clear, exact topic!'],['Explain nature','🌳',1,'Clear, but nature is too big.'],['Say things','💬',0,'“Things”? Which things?']],
+     aud:[['to a class of 8-year-olds','🏫',2,'The AI knows the age, so it picks the right words!'],['to a grumpy dragon','🐲',1,'An audience, but not the one you need.'],['to people','🙂',0,'“People” could be anybody.']],
+     tone:[['in a fun voice with a silly joke','🤣',2,'Fun voices keep kids interested!'],['in a super boring voice','😴',1,'A voice, but boring won’t keep kids listening.'],['in any voice','🎲',0,'“Any voice” gives no direction.']]}},
+ {story:'😴 A sleepy toddler can’t fall asleep! Ask Beep to explain why we need sleep, in a way a toddler will love.',badge:'😴',slots:['exp','aud','tone'],
+  ok:'A soft, cozy voice for a toddler is very different from how you’d explain it to a doctor. Choosing the audience and tone changes the whole answer!',
+  solo:['Explain sleep','💤','No audience and no voice! The AI has to guess.'],
+  b:{exp:[['Explain why we need sleep','😴',2,'A clear topic!'],['Explain the body','🫀',1,'Clear, but the body is too big.'],['Talk about things','🤷',0,'“Things”? Which things?']],
+     aud:[['to a sleepy toddler','👶',2,'You told the AI exactly who is listening!'],['to a night-shift doctor','🩺',1,'An audience, but doctors don’t need toddler words.'],['to somebody','🙂',0,'“Somebody” could be anyone.']],
+     tone:[['in a soft, cozy voice','🧸',2,'Soft and cozy is perfect for bedtime!'],['in a loud, shouty voice','📢',1,'A voice, but shouting won’t help a sleepy toddler.'],['in a voice','🎲',0,'Which voice? The AI has to guess.']]}}
+ ]},
+/* ---------------- LEVEL 5 · FORMAT & LENGTH ---------------- */
+{name:'Rambling Snail',emoji:'🐌',atk:'🐚',aura:'#FFE44D',anim:'f-wobble',
+ concept:'Format & Length',skill:'Ask for a Format',
+ lesson:'Tell the AI the shape and size of the answer you want.',
+ how:'The Rambling Snail never stops talking. Tell Beep WHAT you need, what FORMAT to use (list, table, steps), and how BIG the answer should be!',
+ hp:110,dmg:{perfect:37,good:22,weak:10,blocked:0},cnt:{perfect:0,good:10,weak:20,blocked:26},heal:6,pi:0,
+ th:{s1:'#3A2A00',s2:'#C08A00',g:'#7A5A00',nc:'#FFE44D',deco:'📜'},
+ part:'So close! Pick a format that fits your job and set a size, so the answer stays short and easy to use.',
+ weak:'If you don’t say the format or the size, the AI might ramble on and on. Ask for a list, a table or steps, and set a limit!',
+ cs:[
+ {story:'🛡️ The Snail is rambling about shields! Ask Beep how to build one, in a neat and tidy format.',badge:'🛡️',slots:['ask','fmt','size'],
+  ok:'A numbered list with exactly 3 steps told the AI the shape AND the size. No rambling! Asking for a format makes answers easier to use.',
+  solo:['Shield instructions','📝','No format and no size! The AI can ramble as long as it likes.'],
+  b:{ask:[['Explain how to build a shield','🛡️',2,'A clear job with exact words.'],['Explain shields','📖',1,'Clear, but “shields” is vague. What about them?'],['Tell me things','🤷',0,'“Things”? Which things?']],
+     fmt:[['as a numbered list','🔢',2,'Steps are easy to follow in a numbered list!'],['as a poem','🎶',1,'A format, but a poem is a poor fit for instructions.'],['in some form','🎲',0,'“Some form” doesn’t say which one.']],
+     size:[['with only 3 steps','3️⃣',2,'A size limit keeps the answer short and clear!'],['with lots and lots of steps','📚',1,'A size, but long answers ramble.'],['with some steps','🤷',0,'“Some” means how many?']]}},
+ {story:'🍎 The Snail is gabbing about snacks! Ask Beep to compare apples and bananas, all neat and organized.',badge:'🍌',slots:['ask','fmt','size'],
+  ok:'A table is the best format for comparing two things side by side. Picking the format that fits the job gets you better answers!',
+  solo:['Fruit facts','🍇','No format and no size! You might get a giant wall of words.'],
+  b:{ask:[['Compare apples and bananas','🍎',2,'A clear job: compare these two things.'],['Talk about fruit','🍇',1,'Clear, but too broad.'],['Say a fruit thing','🤷',0,'“A fruit thing” could be anything.']],
+     fmt:[['in a small table','📊',2,'Tables are perfect for comparing!'],['in a long story','📖',1,'A format, but stories aren’t great for comparing.'],['in a format','🎲',0,'Which format? The AI has to guess.']],
+     size:[['with 3 short rows','📏',2,'A size limit keeps the table tidy!'],['with as many rows as possible','📚',1,'A size, but it could go on forever.'],['with some rows','🤷',0,'“Some” means how many?']]}},
+ {story:'🚦 The Snail keeps talking about traffic! Ask Beep what the light colors mean, in a quick-to-read way.',badge:'🚦',slots:['ask','fmt','size'],
+  ok:'A bulleted list with one short sentence each is fast to scan. You can tell an AI exactly how you want to read the answer!',
+  solo:['Traffic light help','🛣️','No format and no size! The AI will pick for you, and might ramble.'],
+  b:{ask:[['Tell me what traffic light colors mean','🚦',2,'A clear question.'],['Tell me about roads','🛣️',1,'Clear, but roads are a big topic.'],['Say some road things','🤷',0,'“Road things” could be anything.']],
+     fmt:[['as a bulleted list','📋',2,'A bulleted list is easy to scan!'],['as one giant paragraph','📃',1,'A format, but giant paragraphs are hard to scan.'],['in some form','🎲',0,'Which form? The AI has to guess.']],
+     size:[['with one short sentence each','✂️',2,'Short and sweet. No rambling!'],['with a very long sentence each','🐍',1,'A size, but long sentences are hard to read.'],['with some words','🤷',0,'“Some words” means how many?']]}}
+ ]},
+/* ---------------- LEVEL 6 · EXAMPLES ---------------- */
+{name:'Bland Ogre',emoji:'👹',atk:'🪨',aura:'#FF8A3D',anim:'f-hop',
+ concept:'Show Examples',skill:'Show Examples',
+ lesson:'Showing the AI an example helps it copy the style you want.',
+ how:'The Bland Ogre only likes boring names. Show Beep an EXAMPLE of the style you love, and the AI will copy it!',
+ hp:120,dmg:{perfect:40,good:24,weak:10,blocked:0},cnt:{perfect:0,good:10,weak:20,blocked:28},heal:6,pi:0,
+ th:{s1:'#3A0F00',s2:'#D6461A',g:'#8A2A0A',nc:'#FF8A3D',deco:'🎨'},
+ part:'Nice try! An example works best when it is the style you really want. Check that your example matches your job.',
+ weak:'Without examples, the AI has to guess your style, and it may come out boring. Show it one or two examples to copy!',
+ cs:[
+ {story:'👾 The Ogre says every monster name must be dull! Ask Beep for fresh, fun ones by showing what you like.',badge:'👾',slots:['job','ex','out'],
+  ok:'“Zappy Zoomer and Fizzy Fang” are examples, and the AI copied their bouncy style! Showing examples is one of the fastest ways to get what you want.',
+  solo:['Monster names','🏷️','No examples! The AI has to guess what kind of names you like.'],
+  b:{job:[['Write 3 monster names','👾',2,'A clear job with an exact number.'],['Write some names','✏️',1,'Clear enough, but which kind of names?'],['Write words','🤷',0,'“Words”? Which words?']],
+     ex:[['in the style of Zappy Zoomer and Fizzy Fang','⚡',2,'Examples show the AI the exact style you love!'],['in the style of Bob and Sue','🙂',1,'Examples! But they’re plain names, not monster names.'],['in any style','🎲',0,'“Any style” gives the AI nothing to copy.']],
+     out:[['with one name on each line','📝',2,'A neat format that’s easy to read.'],['in one long paragraph','📃',1,'A format, but names are easier to read on separate lines.'],['in whatever way','🤷',0,'“Whatever” leaves the AI guessing.']]}},
+ {story:'🐠 The Ogre wants boring names for a pet fish tank. Ask Beep for splashy ones by showing the style you like!',badge:'🐠',slots:['job','ex','out'],
+  ok:'“Bubbles McSplash and Captain Finn” showed the AI the fun, silly style. One or two good examples can teach an AI a whole style!',
+  solo:['Fish names','🐟','No examples! The AI can’t tell what style you want.'],
+  b:{job:[['Invent 3 names for pet fish','🐠',2,'A clear job with an exact number.'],['Invent some names','✏️',1,'Clear enough, but names for what?'],['Make stuff up','🤷',0,'“Stuff”? What stuff?']],
+     ex:[['in the style of Bubbles McSplash and Captain Finn','🫧',2,'Great examples, silly and full of splash!'],['in the style of Fish 1 and Fish 2','🔢',1,'Examples! But they’re boring, not the style you want.'],['in any style','🎲',0,'“Any style” gives the AI nothing to copy.']],
+     out:[['and add a silly reason for each','😂',2,'Extra instructions make the answer more fun!'],['and add nothing else','🤐',1,'A rule, but you’d lose the fun part.'],['and add stuff','🤷',0,'“Stuff”? The AI has to guess.']]}},
+ {story:'🍦 The Ogre’s ice-cream shop only sells plain flavors! Ask Beep for wild new ones by showing the style you want.',badge:'🍦',slots:['job','ex','out'],
+  ok:'“Bubblegum Blast and Rocket Raspberry” gave the AI a pattern to copy. When you want a certain style, show an example!',
+  solo:['New flavors','🍨','No examples! The AI will guess, and might pick vanilla again.'],
+  b:{job:[['Invent 3 ice cream flavors','🍦',2,'A clear job with an exact number.'],['Invent some treats','🍬',1,'Clear enough, but which treats?'],['Make something','🤷',0,'“Something”? What?']],
+     ex:[['in the style of Bubblegum Blast and Rocket Raspberry','🚀',2,'Fun examples show the exact style!'],['in the style of Vanilla and Chocolate','🍫',1,'Examples! But they’re plain flavors, not wild ones.'],['in any style','🎲',0,'“Any style” gives the AI nothing to copy.']],
+     out:[['with a one-line yummy description each','😋',2,'A clear size and shape for the answer.'],['with a very long description each','📚',1,'A size, but very long is too much.'],['in some way','🤷',0,'“Some way” leaves the AI guessing.']]}}
+ ]},
+/* ---------------- LEVEL 7 · THINK STEP BY STEP ---------------- */
+{name:'Riddle Sphinx',emoji:'🗿',atk:'❓',aura:'#B57BFF',anim:'f-float',
+ concept:'Think Step by Step',skill:'Show Your Thinking',
+ lesson:'Asking an AI to think step by step helps it solve harder problems.',
+ how:'The Riddle Sphinx asks tricky riddles. Tell Beep the PUZZLE, ask it to show its thinking step by step, then have it double-check!',
+ hp:130,dmg:{perfect:44,good:26,weak:11,blocked:0},cnt:{perfect:0,good:11,weak:22,blocked:30},heal:6,pi:0,
+ th:{s1:'#2A0A5A',s2:'#7B3DFF',g:'#4B1FB0',nc:'#B57BFF',deco:'❓'},
+ part:'Good start! For tricky puzzles, ask the AI to think slowly and check its work. Look for the step that could be stronger.',
+ weak:'Quick guesses on tricky puzzles are often wrong! Ask the AI to show its thinking step by step, then check the answer.',
+ cs:[
+ {story:'🍎 Riddle: “You have 5 apples, give away 2, then buy 4 more. How many now?” Ask Beep to solve it carefully!',badge:'🍎',slots:['puz','think','chk'],
+  ok:'Step by step, the AI worked out 5 − 2 + 4 = 7 in order. Asking it to show its thinking makes tricky problems much more accurate!',
+  solo:['Apple answer, please','🙏','No thinking steps! Quick answers to tricky riddles are often wrong.'],
+  b:{puz:[['Solve the apple riddle','🍎',2,'A clear job.'],['Look at the riddle','👀',1,'Looking isn’t solving!'],['Do something','🤷',0,'“Something”? Which something?']],
+     think:[['and show your thinking step by step','🪜',2,'Step-by-step thinking helps the AI avoid mistakes!'],['and answer super fast','⚡',1,'Fast answers can skip steps, and mistakes sneak in.'],['and just guess','🎲',0,'Guessing is the riskiest way to solve a riddle!']],
+     chk:[['then check your answer','✅',2,'Double-checking catches sneaky mistakes.'],['then add more apples','➕',1,'That changes the riddle instead of checking it!'],['then hope it’s right','🍀',0,'Hoping isn’t checking!']]}},
+ {story:'🚂 Riddle: “A train leaves at 3:00 and rides for 2 hours. When does it arrive?” Ask Beep to work it out.',badge:'🚂',slots:['puz','think','chk'],
+  ok:'Showing each step (3:00 plus 2 hours) helps the AI stay on track. When a problem has more than one step, ask for the steps!',
+  solo:['Train time, quick','⏰','No thinking steps! The AI might rush and get it wrong.'],
+  b:{puz:[['Solve the train riddle','🚂',2,'A clear job.'],['Wave at the train','👋',1,'Friendly, but it won’t solve anything!'],['Do a thing','🤷',0,'“A thing”? Which thing?']],
+     think:[['and show your thinking step by step','🪜',2,'Steps keep the AI from skipping ahead!'],['and answer without thinking','🙈',1,'Skipping the thinking makes mistakes more likely.'],['and guess a time','🎲',0,'Guessing a time is risky.']],
+     chk:[['then double-check your math','🧮',2,'Checking the math catches slips.'],['then ride the train','🎢',1,'Fun, but it doesn’t check anything.'],['then say you’re done','🏁',0,'Done isn’t the same as correct!']]}},
+ {story:'🐝 Riddle: “3 bees each have 6 legs. How many legs in all?” Ask Beep to solve it, one careful step at a time.',badge:'🐝',slots:['puz','think','chk'],
+  ok:'3 bees × 6 legs = 18 legs. Slowing down and showing steps helps an AI (and you!) get math right.',
+  solo:['Bee legs, fast','🔢','No thinking steps! Fast guesses often go wrong.'],
+  b:{puz:[['Solve the bee riddle','🐝',2,'A clear job.'],['Count the bees','🔢',1,'Counting bees is only part of the riddle.'],['Buzz around','🤷',0,'Buzzing won’t solve anything!']],
+     think:[['and show your thinking step by step','🪜',2,'Each step builds on the one before it!'],['and answer in one second','⚡',1,'Too fast! Mistakes can sneak in.'],['and pick any number','🎲',0,'Picking a number is just a guess.']],
+     chk:[['then check your answer','✅',2,'Double-checking is a great habit.'],['then count the flowers','🌼',1,'Flowers aren’t part of this riddle!'],['then trust it','🙈',0,'Trusting without checking is risky.']]}}
+ ]},
+/* ---------------- LEVEL 8 · BREAK IT DOWN ---------------- */
+{name:'Big-Task T-Rex',emoji:'🦖',atk:'🦴',aura:'#39FF88',anim:'f-hop',
+ concept:'Break It Down',skill:'Break It Into Steps',
+ lesson:'Big jobs get easier when you split them into small, ordered steps.',
+ how:'The T-Rex hands Beep a GIANT job. Split it up! Tell Beep what to do FIRST, what comes THEN, and how to finish.',
+ hp:140,dmg:{perfect:47,good:28,weak:12,blocked:0},cnt:{perfect:0,good:12,weak:24,blocked:32},heal:6,pi:0,
+ th:{s1:'#06331E',s2:'#1AA65A',g:'#0E6B3B',nc:'#39FF88',deco:'🧩'},
+ part:'Nice! Steps only work when they are in the right order and fit the job. Check each step.',
+ weak:'Giant, one-piece jobs confuse an AI. Break the job into small steps: first, then, finally!',
+ cs:[
+ {story:'🌉 The T-Rex wants a bridge across the river! One giant order is too big. Give Beep small steps in the right order.',badge:'🌉',slots:['s1','s2','s3'],
+  ok:'Gather, build, test: small steps in the right order! Splitting a big job makes each step easier for the AI to get right.',
+  solo:['Build a bridge','🏗️','One giant step! Big jobs are easier when you break them down.'],
+  b:{s1:[['First, gather strong planks','🪵',2,'A great first step. You need materials!'],['First, paint the bridge','🎨',1,'A real step, but painting comes last, not first!'],['First, do everything','🤷',0,'“Everything” is not a step.']],
+     s2:[['then hammer them together','🔨',2,'The building step, right where it belongs.'],['then take a nap','😴',1,'Rest is nice, but napping won’t build a bridge.'],['then do it','🤷',0,'“Do it”? Do what?']],
+     s3:[['and finally, test it safely','✅',2,'Testing keeps everyone safe!'],['and finally, walk away','🚪',1,'You should test the bridge before you leave!'],['and finally, be done','🤷',0,'“Be done” is not an action.']]}},
+ {story:'🥪 The T-Rex is hungry! The giant order “Make lunch!” is too big. Break it into small steps.',badge:'🥪',slots:['s1','s2','s3'],
+  ok:'Wash, stack, slice: clear little steps in a sensible order. AIs do better with a plan they can follow one step at a time!',
+  solo:['Make lunch','🍽️','One giant step! Ask for small steps instead.'],
+  b:{s1:[['First, wash your hands','🧼',2,'Always the first step of cooking!'],['First, eat the sandwich','😋',1,'That step comes at the END!'],['First, do lunch','🤷',0,'“Do lunch” is too big to be a step.']],
+     s2:[['then stack bread, cheese and lettuce','🥬',2,'The building step, right in the middle.'],['then sing to the bread','🎤',1,'Fun, but it won’t make lunch.'],['then make it','🤷',0,'“Make it”? Make what?']],
+     s3:[['and finally, cut it in half and enjoy','🥪',2,'The perfect ending!'],['and finally, forget about it','🙈',1,'You’d miss your delicious lunch!'],['and finally, finish','🤷',0,'“Finish” doesn’t say what to do.']]}},
+ {story:'🪁 The T-Rex wants a kite flying high! “Fly a kite” is too big. Give Beep small steps in order.',badge:'🪁',slots:['s1','s2','s3'],
+  ok:'Tie, run, reel in: three small steps that go in order. When you split a big task up, the AI is much less likely to mix things up!',
+  solo:['Fly a kite','🌤️','One giant step! Break it into smaller ones.'],
+  b:{s1:[['First, tie the string to the kite','🪢',2,'You must attach the string before anything else.'],['First, wait for a storm','⛈️',1,'Storms are unsafe for kites!'],['First, get ready','🤷',0,'“Get ready” is too fuzzy.']],
+     s2:[['then run into the wind to lift it','🌬️',2,'The wind lifts the kite into the sky.'],['then hide the kite in a box','📦',1,'A kite in a box can’t fly!'],['then do the thing','🤷',0,'“The thing”? Which thing?']],
+     s3:[['and finally, reel it in safely','🎣',2,'A safe landing to finish!'],['and finally, let go of the string','😬',1,'Your kite would fly away!'],['and finally, stop','🤷',0,'“Stop” doesn’t say how.']]}}
+ ]},
+/* ---------------- LEVEL 9 · FACT-CHECKING ---------------- */
+{name:'Fibbing Fox',emoji:'🦊',atk:'🤥',aura:'#FF6A88',anim:'f-sway',
+ concept:'Fact-Checking',skill:'Check the Facts',
+ lesson:'AI can sound sure and still be wrong, so allow “I don’t know” and double-check.',
+ how:'The Fibbing Fox loves to make up fake facts. Ask Beep a clear question, let it say “I don’t know”, and ask how to check the facts!',
+ hp:150,dmg:{perfect:50,good:30,weak:12,blocked:0},cnt:{perfect:0,good:12,weak:24,blocked:32},heal:6,pi:0,
+ th:{s1:'#3A0A18',s2:'#C2264B',g:'#7A1030',nc:'#FF6A88',deco:'🤥'},
+ part:'Nearly! A great prompt lets the AI admit when it’s unsure and helps you double-check what it says.',
+ weak:'AI can sound super sure and still be wrong! Let it say “I don’t know”, and always double-check important facts.',
+ cs:[
+ {story:'🐬 The Fibbing Fox says dolphins can fly! Ask Beep for a TRUE fact, and keep it honest.',badge:'🐬',slots:['q','idk','ver'],
+  ok:'Letting the AI say “I don’t know” stops it from making things up, and asking how to double-check keeps YOU in charge. Never trust an AI without checking!',
+  solo:['Dolphin facts','🌊','No safety rules! The AI might sound sure and be wrong.'],
+  b:{q:[['Tell me one true fact about dolphins','🐬',2,'A clear question that asks for a TRUE fact.'],['Tell me a fact','💬',1,'Clear, but a fact about what?'],['Tell me stuff','🤷',0,'“Stuff”? Which stuff?']],
+     idk:[['and if you’re not sure, say “I don’t know”','🤷',2,'Giving the AI permission to say “I don’t know” cuts down on made-up answers!'],['and try your best','🙂',1,'Kind, but the AI may still guess when it’s unsure.'],['and never admit you’re unsure','😎',0,'Yikes! That pushes the AI to make things up.']],
+     ver:[['then tell me how I can double-check it','🔎',2,'Now you can look it up yourself!'],['then tell me another fact','➕',1,'More facts, but no checking!'],['then say it’s definitely right','😎',0,'Never trust “definitely” without checking!']]}},
+ {story:'🏔️ The Fox claims Mount Everest is only 100 feet tall! Ask Beep for the real height, and keep it honest.',badge:'🏔️',slots:['q','idk','ver'],
+  ok:'When the AI admits what it doesn’t know, you know where to double-check. Real experts say “I’m not sure” too!',
+  solo:['Everest height','⛰️','No safety rules! The AI might guess a number.'],
+  b:{q:[['Tell me how tall Mount Everest is','🏔️',2,'A clear question with an exact answer.'],['Tell me about mountains','⛰️',1,'Clear, but mountains are a huge topic.'],['Tell me a number','🔢',0,'“A number”? Which number?']],
+     idk:[['and if you’re not sure, say “I don’t know”','🤷',2,'A safe way to avoid made-up numbers.'],['and give me your best guess','🙂',1,'A guess isn’t a fact.'],['and always sound very sure','😎',0,'Sounding sure isn’t the same as being right!']],
+     ver:[['then tell me where I can check it','🔎',2,'Now you can look it up yourself!'],['then tell me a taller mountain','➕',1,'More info, but no checking!'],['then tell me I’m right','🙈',0,'The AI shouldn’t just agree. Check for yourself!']]}},
+ {story:'🐙 The Fox says octopuses have ten hearts! Ask Beep for a TRUE fact about octopuses, and keep it honest.',badge:'🐙',slots:['q','idk','ver'],
+  ok:'AI is a helpful research buddy, not a final answer. Ask it to be honest, then check the facts with a trusted book, website or grown-up!',
+  solo:['Octopus facts','🌊','No safety rules! The AI might sound sure and be wrong.'],
+  b:{q:[['Tell me one true fact about octopuses','🐙',2,'A clear question asking for a TRUE fact.'],['Tell me a fact','💬',1,'Clear, but a fact about what?'],['Tell me things','🤷',0,'“Things”? Which things?']],
+     idk:[['and if you’re not sure, say “I don’t know”','🤷',2,'Honesty helps stop the fibbing!'],['and try your best','🙂',1,'The AI may still guess when it’s unsure.'],['and never say “I don’t know”','😎',0,'Yikes! That pushes the AI to make things up.']],
+     ver:[['then tell me how I can double-check it','🔎',2,'Double-checking is the best habit.'],['then tell me another fact','➕',1,'More facts, but no checking!'],['then say it’s a sure thing','😎',0,'Never trust “sure” without checking!']]}}
+ ]},
+/* ---------------- LEVEL 10 · BOSS · ITERATE ---------------- */
+{name:'Prompt Dragon',emoji:'🐉',atk:'🔥',aura:'#FFE44D',anim:'f-pulse',mini:true,
+ concept:'Improve Your Prompt',skill:'Try, Fix, Try Again',
+ lesson:'Great prompts are made by improving them: keep what works, fix what doesn’t.',
+ how:'The Prompt Dragon’s first answer is never perfect, and that’s normal! Tell Beep what to KEEP, what to FIX, and what to ADD.',
+ hp:160,dmg:{perfect:40,good:24,weak:10,blocked:0},cnt:{perfect:0,good:12,weak:25,blocked:35},heal:8,pi:0,
+ th:{s1:'#2A0030',s2:'#FF7A00',g:'#8A1B00',nc:'#FFE44D',deco:'👑'},
+ part:'Almost there! Improving a prompt means keeping what works, fixing the real problem, and adding something that helps.',
+ weak:'The first answer from an AI is rarely perfect. Don’t start over! Tell it what to keep, what to fix and what to add.',
+ cs:[
+ {story:'📜 The Dragon’s first poem is too long and boring, but the first line is funny. Don’t start over! Improve it.',badge:'📜',slots:['keep','fix','add'],
+  ok:'You kept what worked, fixed what didn’t, and added something new. Real AI users improve their prompts again and again. That’s called iterating!',
+  solo:['Fix my poem','🛠️','No details! The AI can’t tell what to keep or what to change.'],
+  b:{keep:[['Keep the funny opening line,','😂',2,'Great! Keep what already works.'],['Keep the boring middle part,','😴',1,'You’d be keeping the part that needs fixing!'],['Keep some of it,','🤷',0,'“Some”? Which part?']],
+     fix:[['but make the rest much shorter,','✂️',2,'You aimed at the real problem: TOO LONG.'],['but make it way longer,','📏',1,'A change, but the poem was already too long!'],['but change it somehow,','🎲',0,'“Somehow” doesn’t tell the AI what to fix.']],
+     add:[['and add a rhyme at the end','🎵',2,'A clear extra that makes it better!'],['and add a few more boring lines','🥱',1,'That adds the wrong thing!'],['and add something','➕',0,'“Something”? What?']]}},
+ {story:'🍪 The Dragon’s cookie recipe has a great name, but the steps are confusing. Improve it without starting over!',badge:'🍪',slots:['keep','fix','add'],
+  ok:'Small, exact changes get better results than starting from scratch. Keep the good, fix the confusing, add what helps!',
+  solo:['Fix my recipe','🛠️','No details! The AI can’t tell what to keep or what to change.'],
+  b:{keep:[['Keep the great recipe name,','🍪',2,'Keep what already works!'],['Keep the confusing steps,','😵',1,'That’s the part that needs fixing!'],['Keep a bit of it,','🤷',0,'“A bit”? Which bit?']],
+     fix:[['but make the steps easier to follow,','📖',2,'You aimed at the real problem!'],['but make the name much longer,','📏',1,'A change, but the name was fine.'],['but change it somehow,','🎲',0,'“Somehow” doesn’t say what to fix.']],
+     add:[['and add a fun way to decorate them','🎨',2,'A clear, helpful extra!'],['and add a second recipe','📚',1,'An extra, but it’s not what was asked for.'],['and add something','➕',0,'“Something”? What?']]}},
+ {story:'📖 The Dragon’s bedtime story has a brave hero, but the ending is too sad. Improve it, don’t restart!',badge:'📖',slots:['keep','fix','add'],
+  ok:'The AI kept the hero you loved and changed only the ending. Clear instructions about what to keep and what to change save lots of time!',
+  solo:['Fix my story','🛠️','No details! The AI can’t tell what to keep or what to change.'],
+  b:{keep:[['Keep the brave hero,','🦸',2,'Keep what you love!'],['Keep the sad ending,','😢',1,'That’s the part you wanted to change!'],['Keep a little,','🤷',0,'“A little”? Which little?']],
+     fix:[['but change the ending to a happy one,','😊',2,'You aimed right at the problem!'],['but make the story much longer,','📏',1,'A change, but the ending was the problem.'],['but change it somehow,','🎲',0,'“Somehow” doesn’t say what to fix.']],
+     add:[['and add a lesson about kindness','💛',2,'A helpful extra!'],['and add a scary monster','👻',1,'An extra, but a scary monster won’t help a bedtime story.'],['and add something','➕',0,'“Something”? What?']]}}
+ ]},
+/* ================= FREE ADVENTURE (levels 11-15) ================= */
+/* ---------------- LEVEL 11 · GIVE BACKGROUND FIRST ---------------- */
+{name:'Sneaky Genie',emoji:'🧞',atk:'💨',aura:'#0EA5E9',anim:'f-float',
+ concept:'Give Background First',skill:'Set the Scene',
+ lesson:'Giving an AI background info before your ask helps it give a better answer.',
+ how:'The Sneaky Genie grants messy wishes when he doesn’t know why you want them. Tell Beep to explain the SITUATION first, then make the ask, then add a detail.',
+ hp:170,dmg:{perfect:57,good:34,weak:15,blocked:0},cnt:{perfect:0,good:15,weak:30,blocked:38},heal:6,pi:1,
+ th:{s1:'#04304F',s2:'#0E86C4',g:'#0A5A8F',nc:'#22D3FF',deco:'💨'},
+ part:'Nice! Background helps most when it explains WHY, and the ask still needs to be clear. Check both pieces.',
+ weak:'Without background, the genie has to guess why you want something, and wishes come out messy. Set the scene first!',
+ cs:[
+ {story:'🌉 The Genie’s bridge keeps collapsing because he doesn’t know it needs to hold a parade! Give him the background.',badge:'🌉',slots:['ctx','ask','out'],
+  ok:'“Since it needs to hold a parade” told the genie WHY, so his wish matched the real need. Background turns a random guess into a smart answer.',
+  solo:['Fix the bridge','🌉','No background! The genie has to guess why you want it fixed.'],
+  b:{ctx:[['Since it needs to hold a whole parade,','🎉',2,'This tells the genie exactly why, so he can plan for it.'],['Since it is Tuesday,','📅',1,'True, but it doesn’t explain what the bridge needs to do.'],['Since things happen,','🤷',0,'“Things happen” explains nothing at all.']],
+     ask:[['build it super strong','💪',2,'A clear ask that matches the background.'],['paint it a color','🎨',1,'A clear ask, but paint won’t hold a parade.'],['do something to it','🤷',0,'“Something”? The genie has to guess.']],
+     out:[['with room for elephants','🐘',2,'A detail that fits a parade perfectly!'],['with a tiny door','🚪',1,'A detail, but a tiny door won’t fit a parade.'],['with extra stuff','📦',0,'“Extra stuff”? Which stuff?']]}},
+ {story:'🍲 The Genie keeps cooking soup nobody can eat, because he doesn’t know who it’s for! Give him the background.',badge:'🍲',slots:['ctx','ask','out'],
+  ok:'Knowing WHY (allergic to nuts) let the genie make a soup that actually works. Context changes what a good answer looks like.',
+  solo:['Make soup','🍲','No background! The genie can’t tell what kind of soup is safe.'],
+  b:{ctx:[['Since the guests are allergic to nuts,','🥜',2,'This is exactly the info the genie needs!'],['Since it is nighttime,','🌙',1,'True, but it doesn’t change what soup is safe.'],['Since stuff happens,','🤷',0,'That tells the genie nothing useful.']],
+     ask:[['cook a nut-free soup','🍲',2,'A clear ask that matches the background.'],['cook a soup','🥘',1,'Clear enough, but doesn’t use the background.'],['cook something','🤷',0,'“Something”? The genie has to guess.']],
+     out:[['with warm bread on the side','🍞',2,'A nice, fitting detail!'],['with a spider on top','🕷️',1,'A detail, but a spider ruins soup!'],['with extra stuff','📦',0,'“Extra stuff”? Which stuff?']]}},
+ {story:'🎁 The Genie keeps wrapping presents in the wrong size box, because he doesn’t know what’s inside! Give him the background.',badge:'🎁',slots:['ctx','ask','out'],
+  ok:'“Since it’s a giant teddy bear” told the genie exactly what size to plan for. Good background makes the whole answer fit better.',
+  solo:['Wrap the gift','🎁','No background! The genie has to guess the size.'],
+  b:{ctx:[['Since it’s a giant teddy bear,','🧸',2,'This tells the genie the size right away!'],['Since it is a gift,','🎀',1,'True, but it doesn’t say how big.'],['Since it exists,','🤷',0,'That tells the genie nothing useful.']],
+     ask:[['use your biggest box','📦',2,'A clear ask that matches the background.'],['use a box','📦',1,'Clear enough, but doesn’t use the background.'],['wrap it somehow','🤷',0,'“Somehow”? The genie has to guess.']],
+     out:[['with a big blue bow','🎀',2,'A nice matching detail!'],['with a tiny ribbon','🧵',1,'A detail, but a tiny ribbon looks silly on a giant box.'],['with extra stuff','📦',0,'“Extra stuff”? Which stuff?']]}}
+ ]},
+/* ---------------- LEVEL 12 · PUT THE BIG THING FIRST ---------------- */
+{name:'Order Ogre',emoji:'🧌',atk:'🥊',aura:'#22C55E',anim:'f-hop',
+ concept:'Order of Importance',skill:'Put the Big Thing First',
+ lesson:'Putting the most important part first helps the AI (and you) focus on what matters most.',
+ how:'The Order Ogre reads everything but only remembers the LAST thing said! Name the job, say what matters most FIRST, then shape the answer.',
+ hp:180,dmg:{perfect:60,good:36,weak:16,blocked:0},cnt:{perfect:0,good:16,weak:32,blocked:40},heal:6,pi:0,
+ th:{s1:'#06331E',s2:'#1AA65A',g:'#0E6B3B',nc:'#39FF88',deco:'🥊'},
+ part:'Good! Check that the “most important” part really IS the most important one, not just any detail.',
+ weak:'When nothing is marked as most important, an AI might focus on the wrong part. Say what matters most, first!',
+ cs:[
+ {story:'🚨 The Ogre is listing safety tips in a random order! Ask for a list where the MOST important tip comes first.',badge:'🚨',slots:['job','first','out'],
+  ok:'“Starting with the most important one” told the AI exactly how to order the list. Now the biggest tip can’t get buried at the bottom.',
+  solo:['Safety tips, please','🚨','No order given! The most important tip could end up buried at the bottom.'],
+  b:{job:[['List 3 fire safety tips','🚨',2,'A clear, exact job.'],['List some tips','📝',1,'Clear enough, but tips about what?'],['Say stuff','🤷',0,'“Stuff”? Which stuff?']],
+     first:[['starting with the most important one','🥇',2,'This puts the biggest tip right at the top!'],['starting with your favorite one','😊',1,'An order, but “favorite” isn’t the same as “most important”.'],['in any order','🎲',0,'“Any order” means the big tip could get buried.']],
+     out:[['and explain why it matters','💡',2,'A great finishing detail.'],['and add a funny drawing','🎨',1,'Fun, but doesn’t help the ranking.'],['and add more stuff','📦',0,'“More stuff”? What stuff?']]}},
+ {story:'🎒 The Ogre packed a backpack with the most useless stuff on top! Ask for packing tips in order of importance.',badge:'🎒',slots:['job','first','out'],
+  ok:'Ranking by importance means the AI leads with what actually matters, instead of burying it under small stuff.',
+  solo:['Packing tips','🎒','No order given! Small stuff could end up first.'],
+  b:{job:[['List 3 things to pack for a hike','🎒',2,'A clear, exact job.'],['List some things','📦',1,'Clear enough, but things for what?'],['Say stuff','🤷',0,'“Stuff”? Which stuff?']],
+     first:[['starting with the most important one','🥇',2,'The most useful item leads the list!'],['starting with the smallest one','🔎',1,'An order, but size isn’t the same as importance.'],['in any order','🎲',0,'“Any order” could bury the important item.']],
+     out:[['and say why it’s important','💡',2,'A great finishing detail.'],['and add a silly sticker','🎨',1,'Fun, but doesn’t help the ranking.'],['and add more stuff','📦',0,'“More stuff”? What stuff?']]}},
+ {story:'📢 The Ogre is giving directions but keeps starting with the least useful part! Ask him to lead with what matters most.',badge:'📢',slots:['job','first','out'],
+  ok:'Leading with the most useful direction means Beep won’t get lost waiting for the important part. Order of importance changes how useful an answer is!',
+  solo:['Give directions','📢','No order given! The useful part could come last.'],
+  b:{job:[['Give 3 directions to the treehouse','🌳',2,'A clear, exact job.'],['Give some directions','📍',1,'Clear enough, but directions to where?'],['Say stuff','🤷',0,'“Stuff”? Which stuff?']],
+     first:[['starting with the most important turn','🥇',2,'The key turn comes first, so it won’t be missed!'],['starting with the prettiest view','🌅',1,'An order, but pretty isn’t the same as important.'],['in any order','🎲',0,'“Any order” could bury the key turn.']],
+     out:[['and keep it short','✂️',2,'A great finishing detail.'],['and add a long story','📖',1,'Fun, but a long story buries the directions.'],['and add more stuff','📦',0,'“More stuff”? What stuff?']]}}
+ ]},
+/* ---------------- LEVEL 13 · STAY CONSISTENT ---------------- */
+{name:'Mirror Twins',emoji:'👯',atk:'🪞',aura:'#FF4FD8',anim:'f-sway',
+ concept:'Consistency',skill:'Keep It Consistent',
+ lesson:'Asking for the same style across a whole list keeps the answer neat and easy to use.',
+ how:'The Mirror Twins copy each other, but never match! Name the job, ask for a format, and say it should all be in ONE matching style.',
+ hp:190,dmg:{perfect:63,good:38,weak:16,blocked:0},cnt:{perfect:0,good:16,weak:32,blocked:40},heal:6,pi:0,
+ th:{s1:'#33106B',s2:'#E23BC8',g:'#8A1B84',nc:'#FF4FD8',deco:'🪞'},
+ part:'So close! The style only stays consistent if you actually ask for “the same style” across the whole list.',
+ weak:'Without asking for consistency, each item can end up in a totally different style, and the list feels messy.',
+ cs:[
+ {story:'🎈 The Twins wrote 3 birthday messages, but each one is a different length and style! Ask for one matching set.',badge:'🎈',slots:['job','fmt','same'],
+  ok:'“All in the same cheerful style” told the AI to keep every item matching. Now the whole set feels like it belongs together.',
+  solo:['Birthday messages','🎈','No consistency rule! Each message could come out totally different.'],
+  b:{job:[['Write 3 birthday messages','🎈',2,'A clear, exact job.'],['Write some messages','✏️',1,'Clear enough, but messages about what?'],['Write words','🤷',0,'“Words”? Which words?']],
+     fmt:[['as short one-line cards','💌',2,'A clear, exact format.'],['as a format','🎲',1,'“A format” doesn’t say which one.'],['in whatever way','🤷',0,'“Whatever” leaves the AI guessing.']],
+     same:[['all in the same cheerful style','😄',2,'This keeps every message matching!'],['each in a different style','🔀',1,'The opposite of consistent — they’d all clash.'],['in some style','🎲',0,'“Some style” doesn’t say which one.']]}},
+ {story:'🏷️ The Twins labeled a shelf of toys with 3 totally different label styles! Ask for one neat, matching set.',badge:'🏷️',slots:['job','fmt','same'],
+  ok:'Matching labels are much easier to read at a glance. Consistency makes a list of things feel organized instead of random.',
+  solo:['Toy labels','🏷️','No consistency rule! Each label could look totally different.'],
+  b:{job:[['Write 3 toy shelf labels','🏷️',2,'A clear, exact job.'],['Write some labels','✏️',1,'Clear enough, but labels for what?'],['Write words','🤷',0,'“Words”? Which words?']],
+     fmt:[['as short bold titles','🔤',2,'A clear, exact format.'],['as a format','🎲',1,'“A format” doesn’t say which one.'],['in whatever way','🤷',0,'“Whatever” leaves the AI guessing.']],
+     same:[['all in the same bold style','💪',2,'This keeps every label matching!'],['each in a different style','🔀',1,'The opposite of consistent — they’d all clash.'],['in some style','🎲',0,'“Some style” doesn’t say which one.']]}},
+ {story:'⭐ The Twins gave 3 star ratings using 3 totally different rating systems! Ask for one matching scale.',badge:'⭐',slots:['job','fmt','same'],
+  ok:'One matching scale across all 3 reviews means you can actually compare them. Consistency isn’t just neat, it’s useful!',
+  solo:['Star ratings','⭐','No consistency rule! Each rating could use a different scale.'],
+  b:{job:[['Rate 3 snacks out of 5 stars','🍎',2,'A clear, exact job.'],['Rate some snacks','🍪',1,'Clear enough, but with what scale?'],['Say opinions','🤷',0,'“Opinions”? On what?']],
+     fmt:[['as a short star list','⭐',2,'A clear, exact format.'],['as a format','🎲',1,'“A format” doesn’t say which one.'],['in whatever way','🤷',0,'“Whatever” leaves the AI guessing.']],
+     same:[['all using the same 5-star scale','5️⃣',2,'This keeps every rating comparable!'],['each using a different scale','🔀',1,'The opposite of consistent — you couldn’t compare them.'],['using some scale','🎲',0,'“Some scale” doesn’t say which one.']]}}
+ ]},
+/* ---------------- LEVEL 14 · USE AN ANALOGY ---------------- */
+{name:'Metaphor Moth',emoji:'🦋',atk:'✨',aura:'#FACC15',anim:'f-float',
+ concept:'Use an Analogy',skill:'Use an Analogy',
+ lesson:'Comparing a tricky idea to something familiar makes it much easier to understand.',
+ how:'The Metaphor Moth only understands things explained through comparisons! Name the topic, compare it to something familiar, then set a size.',
+ hp:200,dmg:{perfect:67,good:40,weak:17,blocked:0},cnt:{perfect:0,good:17,weak:34,blocked:42},heal:6,pi:0,
+ th:{s1:'#4A3A00',s2:'#EAB308',g:'#8A6A00',nc:'#FFE44D',deco:'✨'},
+ part:'Nice! An analogy works best when the comparison is something the listener already knows well. Check the fit.',
+ weak:'Without a comparison, a tricky idea can be hard to picture. Compare it to something familiar!',
+ cs:[
+ {story:'🧠 The Moth is baffled by how memory works! Explain it by comparing it to something everyone knows.',badge:'🧠',slots:['exp','cmp','size'],
+  ok:'Comparing memory to a backpack gives the AI (and you) a picture to hold onto. Analogies turn “hard to imagine” into “easy to picture”.',
+  solo:['Explain memory','🧠','No comparison! A tricky idea with nothing familiar to hold onto.'],
+  b:{exp:[['Explain how memory works','🧠',2,'A clear, exact topic.'],['Explain the brain','🧠',1,'Clear, but the brain is a huge topic.'],['Explain stuff','🤷',0,'“Stuff”? Which stuff?']],
+     cmp:[['by comparing it to a backpack','🎒',2,'A backpack that fills up is a perfect, familiar comparison!'],['by comparing it to Tuesday','📅',1,'A comparison, but Tuesday has nothing to do with memory.'],['by comparing it to something','🤷',0,'“Something” isn’t a real comparison.']],
+     size:[['in two short sentences','✂️',2,'A great, tight size limit!'],['in one giant paragraph','📚',1,'A size, but way too long for a quick idea.'],['with some words','🤷',0,'“Some words” means how many?']]}},
+ {story:'☁️ The Moth can’t picture how the internet sends information! Explain it with a familiar comparison.',badge:'☁️',slots:['exp','cmp','size'],
+  ok:'Comparing data to letters in the mail gives a clear mental picture. The right analogy makes a hard idea click instantly.',
+  solo:['Explain the internet','☁️','No comparison! A tricky idea with nothing familiar to hold onto.'],
+  b:{exp:[['Explain how the internet sends data','☁️',2,'A clear, exact topic.'],['Explain computers','💻',1,'Clear, but computers are a huge topic.'],['Explain stuff','🤷',0,'“Stuff”? Which stuff?']],
+     cmp:[['by comparing it to sending mail','✉️',2,'Mail is something everyone already understands!'],['by comparing it to a sandwich','🥪',1,'A comparison, but a sandwich has nothing to do with data.'],['by comparing it to something','🤷',0,'“Something” isn’t a real comparison.']],
+     size:[['in two short sentences','✂️',2,'A great, tight size limit!'],['in one giant paragraph','📚',1,'A size, but way too long for a quick idea.'],['with some words','🤷',0,'“Some words” means how many?']]}},
+ {story:'🌱 The Moth doesn’t understand how a plant grows from a seed! Explain it with a familiar comparison.',badge:'🌱',slots:['exp','cmp','size'],
+  ok:'Comparing a seed to a tiny recipe waiting to happen makes it click right away. Good analogies borrow something the listener already gets.',
+  solo:['Explain plant growth','🌱','No comparison! A tricky idea with nothing familiar to hold onto.'],
+  b:{exp:[['Explain how a seed grows into a plant','🌱',2,'A clear, exact topic.'],['Explain nature','🌳',1,'Clear, but nature is a huge topic.'],['Explain stuff','🤷',0,'“Stuff”? Which stuff?']],
+     cmp:[['by comparing it to baking a cake','🎂',2,'Ingredients plus time equals something new — a perfect comparison!'],['by comparing it to a bicycle','🚲',1,'A comparison, but a bicycle has nothing to do with growing.'],['by comparing it to something','🤷',0,'“Something” isn’t a real comparison.']],
+     size:[['in two short sentences','✂️',2,'A great, tight size limit!'],['in one giant paragraph','📚',1,'A size, but way too long for a quick idea.'],['with some words','🤷',0,'“Some words” means how many?']]}}
+ ]},
+/* ---------------- LEVEL 15 · FREE FINALE · COMBO ---------------- */
+{name:'Combo Golem',emoji:'🪨',atk:'💥',aura:'#7B3DFF',anim:'f-pulse',mini:true,
+ concept:'Combine Your Skills',skill:'Combine What You’ve Learned',
+ lesson:'The best prompts often stack more than one skill together: a role, an audience, and an example, all at once.',
+ how:'The Combo Golem is built from everything you’ve faced so far! Give Beep a ROLE, an AUDIENCE, and an EXAMPLE, all together.',
+ hp:220,dmg:{perfect:57,good:34,weak:15,blocked:0},cnt:{perfect:0,good:15,weak:30,blocked:38},heal:6,pi:0,
+ th:{s1:'#2A0A5A',s2:'#7B3DFF',g:'#4B1FB0',nc:'#B57BFF',deco:'🧩'},
+ part:'Great combo attempt! Check each piece: is the role right, the audience right, AND the example right?',
+ weak:'One skill alone can crack the Golem, but stacking two or three at once hits much harder!',
+ cs:[
+ {story:'🎨 The Combo Golem is made of solid rock rhymes! Give Beep a role, an audience, and an example all at once.',badge:'🎨',slots:['role','aud','ex'],
+  ok:'A role AND an audience AND an example, all stacked together — that’s three skills working as one! Big prompts often combine small skills like this.',
+  solo:['Write a poem','✏️','No role, no audience, no example! Just one skill would barely scratch the Golem.'],
+  b:{role:[['Act as a Playful Poet','🖋️',2,'The perfect expert for rhymes!'],['Act as a Sleepy Sloth','🦥',1,'A role, but sloths aren’t poets.'],['Act as anybody','🙂',0,'“Anybody” isn’t an expert.']],
+     aud:[['for a class of 7-year-olds','🏫',2,'Now the AI knows exactly who is listening!'],['for a room of judges','⚖️',1,'An audience, but not a playful one.'],['for people','🙂',0,'“People” could be anybody.']],
+     ex:[['in the style of “Sun so bright, hold on tight!”','☀️',2,'A great example of the bouncy rhyme style!'],['in the style of a grocery list','🛒',1,'An example, but grocery lists don’t rhyme.'],['in some style','🎲',0,'“Some style” gives nothing to copy.']]}},
+ {story:'🎬 The Combo Golem is stomping to a boring movie pitch! Give Beep a role, an audience, and an example all at once.',badge:'🎬',slots:['role','aud','ex'],
+  ok:'Stacking a role, an audience, and an example gave the pitch real personality. Combining skills is how the pros write great prompts!',
+  solo:['Pitch a movie','🎬','No role, no audience, no example! Just one skill would barely scratch the Golem.'],
+  b:{role:[['Act as a Hollywood Director','🎥',2,'The perfect expert for a movie pitch!'],['Act as a Sleepy Sloth','🦥',1,'A role, but sloths don’t pitch movies.'],['Act as anybody','🙂',0,'“Anybody” isn’t an expert.']],
+     aud:[['for a room of excited kids','🎈',2,'Now the AI knows exactly who is listening!'],['for a room of judges','⚖️',1,'An audience, but not an excited one.'],['for people','🙂',0,'“People” could be anybody.']],
+     ex:[['in the style of a superhero trailer','🦸',2,'A great example of exciting, punchy style!'],['in the style of a grocery list','🛒',1,'An example, but grocery lists aren’t exciting.'],['in some style','🎲',0,'“Some style” gives nothing to copy.']]}},
+ {story:'🏰 The Combo Golem guards a castle of boring news reports! Give Beep a role, an audience, and an example all at once.',badge:'🏰',slots:['role','aud','ex'],
+  ok:'A role, an audience, and an example, working together, turned a dull report into something fun. That’s three lessons in one prompt!',
+  solo:['Write a news report','📰','No role, no audience, no example! Just one skill would barely scratch the Golem.'],
+  b:{role:[['Act as a Cheerful Town Reporter','🎙️',2,'The perfect expert for exciting local news!'],['Act as a Sleepy Sloth','🦥',1,'A role, but sloths don’t report news.'],['Act as anybody','🙂',0,'“Anybody” isn’t an expert.']],
+     aud:[['for kids at a school assembly','🏫',2,'Now the AI knows exactly who is listening!'],['for a room of judges','⚖️',1,'An audience, but not a school one.'],['for people','🙂',0,'“People” could be anybody.']],
+     ex:[['in the style of “Breaking news: recess is back!”','📣',2,'A great example of the fun, punchy style!'],['in the style of a grocery list','🛒',1,'An example, but grocery lists aren’t news.'],['in some style','🎲',0,'“Some style” gives nothing to copy.']]}}
+ ]},
+/* ================= PROMPT MASTER PACK (levels 16-25, premium) ================= */
+/* ---------------- LEVEL 16 · SUMMARIZE ---------------- */
+{name:'Wordy Whale',emoji:'🐳',atk:'💦',aura:'#38BDF8',anim:'f-float',premium:true,
+ concept:'Summarize',skill:'Shrink It Down',
+ lesson:'Asking an AI to summarize gets the important parts without all the extra words.',
+ how:'The Wordy Whale never stops talking! Name the job, ask it to shrink it down, and set a size.',
+ hp:230,dmg:{perfect:77,good:46,weak:20,blocked:0},cnt:{perfect:0,good:20,weak:40,blocked:50},heal:6,pi:0,
+ th:{s1:'#04304F',s2:'#38BDF8',g:'#0A5A8F',nc:'#22D3FF',deco:'💦'},
+ part:'Close! A good summary keeps the important parts and cuts the rest. Check that the size limit is actually short.',
+ weak:'Without asking to shrink it down, the AI might repeat everything word for word. Ask for a summary!',
+ cs:[
+ {story:'📖 The Whale is retelling an entire book, word for word! Ask Beep to get a short summary instead.',badge:'📖',slots:['job','shrink','size'],
+  ok:'“Shrink it down” plus a size limit told the AI to keep only the important parts. That’s exactly what a summary is for!',
+  solo:['Tell me the book','📖','No summary! You might get the entire book back, word for word.'],
+  b:{job:[['Summarize this adventure story','📖',2,'A clear, exact job.'],['Talk about the story','💬',1,'Clear enough, but doesn’t ask for a summary.'],['Say the story','🤷',0,'“Say the story” could mean anything.']],
+     shrink:[['and shrink it down to the key parts','✂️',2,'This is exactly what a summary means!'],['and add more details','➕',1,'The opposite of shrinking — this makes it longer.'],['and do stuff to it','🤷',0,'“Stuff”? What stuff?']],
+     size:[['in 2 short sentences','2️⃣',2,'A real size limit — no rambling!'],['in as many words as you want','📚',1,'No limit means it could ramble on forever.'],['with some words','🤷',0,'“Some words” means how many?']]}},
+ {story:'📰 The Whale is reading the whole newspaper out loud! Ask Beep to summarize just the top story.',badge:'📰',slots:['job','shrink','size'],
+  ok:'A tight summary with a real size limit is fast to read and still covers what matters. That’s the whole point of summarizing!',
+  solo:['Tell me the news','📰','No summary! You might get every single article, word for word.'],
+  b:{job:[['Summarize the top news story','📰',2,'A clear, exact job.'],['Talk about the news','💬',1,'Clear enough, but doesn’t ask for a summary.'],['Say the news','🤷',0,'“Say the news” could mean anything.']],
+     shrink:[['and shrink it down to the main point','✂️',2,'This is exactly what a summary means!'],['and add more details','➕',1,'The opposite of shrinking — this makes it longer.'],['and do stuff to it','🤷',0,'“Stuff”? What stuff?']],
+     size:[['in one short sentence','1️⃣',2,'A real size limit — no rambling!'],['in as many words as you want','📚',1,'No limit means it could ramble on forever.'],['with some words','🤷',0,'“Some words” means how many?']]}},
+ {story:'🎥 The Whale is replaying an entire movie from the beginning! Ask Beep for a short summary instead.',badge:'🎥',slots:['job','shrink','size'],
+  ok:'“Shrink it down” to just the main event, with a size limit, gets you the gist fast. That’s summarizing at work!',
+  solo:['Tell me the movie','🎥','No summary! You might get the entire movie, scene by scene.'],
+  b:{job:[['Summarize the movie’s ending','🎬',2,'A clear, exact job.'],['Talk about the movie','💬',1,'Clear enough, but doesn’t ask for a summary.'],['Say the movie','🤷',0,'“Say the movie” could mean anything.']],
+     shrink:[['and shrink it down to the big twist','✂️',2,'This is exactly what a summary means!'],['and add more details','➕',1,'The opposite of shrinking — this makes it longer.'],['and do stuff to it','🤷',0,'“Stuff”? What stuff?']],
+     size:[['in 2 short sentences','2️⃣',2,'A real size limit — no rambling!'],['in as many words as you want','📚',1,'No limit means it could ramble on forever.'],['with some words','🤷',0,'“Some words” means how many?']]}}
+ ]},
+/* ---------------- LEVEL 17 · ASK FOR TWO THINGS CLEARLY ---------------- */
+{name:'Juggler Jinx',emoji:'🤹',atk:'🎪',aura:'#F472B6',anim:'f-wobble',premium:true,
+ concept:'Multi-Part Requests',skill:'Ask for Two Things Clearly',
+ lesson:'When you need more than one thing, naming each part clearly keeps the AI from mixing them up.',
+ how:'Jinx juggles requests and drops half of them! Name the first job clearly, then say “and also” for the second, then shape the whole answer.',
+ hp:240,dmg:{perfect:80,good:48,weak:21,blocked:0},cnt:{perfect:0,good:21,weak:42,blocked:52},heal:6,pi:0,
+ th:{s1:'#3A0A2A',s2:'#DB2777',g:'#7A1050',nc:'#FF4FD8',deco:'🎪'},
+ part:'Almost! Both parts of the ask need to be clear on their own, not just squeezed together.',
+ weak:'When two asks are jumbled together without a clear split, one of them often gets dropped, just like Jinx drops a ball!',
+ cs:[
+ {story:'🍕 Jinx keeps forgetting half your order! Ask for a pizza topping AND a side dish, clearly split into two parts.',badge:'🍕',slots:['job','and2','out'],
+  ok:'Naming each part clearly (“and also”) stopped Jinx from dropping half the order. Two clear asks beat one jumbled one!',
+  solo:['Food, please','🍕','No clear split! Jinx will probably drop half of it.'],
+  b:{job:[['Suggest a pizza topping','🍕',2,'A clear, exact first job.'],['Suggest some food','🍽️',1,'Clear enough, but which food?'],['Suggest stuff','🤷',0,'“Stuff”? What stuff?']],
+     and2:[['and also suggest a side dish','🥗',2,'“And also” clearly splits the second ask!'],['and maybe other things too','🤷',1,'Vague — Jinx won’t know what the second thing even is.'],['and whatever','🎲',0,'“Whatever” gives Jinx nothing to juggle.']],
+     out:[['in one short list','📋',2,'A neat way to hold both parts together.'],['in one giant paragraph','📃',1,'A format, but hard to tell the parts apart.'],['in some way','🤷',0,'“Some way” leaves it fuzzy.']]}},
+ {story:'🎈 Jinx is juggling a party and keeps forgetting the games! Ask for a decoration idea AND a game idea, clearly split.',badge:'🎈',slots:['job','and2','out'],
+  ok:'Splitting the ask into two named parts meant Jinx could actually keep track of both. Clear structure beats a jumble every time.',
+  solo:['Party ideas','🎈','No clear split! Jinx will probably drop half of it.'],
+  b:{job:[['Suggest a fun decoration','🎈',2,'A clear, exact first job.'],['Suggest some party stuff','🎉',1,'Clear enough, but which stuff?'],['Suggest stuff','🤷',0,'“Stuff”? What stuff?']],
+     and2:[['and also suggest a fun game','🎮',2,'“And also” clearly splits the second ask!'],['and maybe other things too','🤷',1,'Vague — Jinx won’t know what the second thing even is.'],['and whatever','🎲',0,'“Whatever” gives Jinx nothing to juggle.']],
+     out:[['in one short list','📋',2,'A neat way to hold both parts together.'],['in one giant paragraph','📃',1,'A format, but hard to tell the parts apart.'],['in some way','🤷',0,'“Some way” leaves it fuzzy.']]}},
+ {story:'🐾 Jinx is planning a pet care routine and keeps forgetting the feeding schedule! Ask for a walk time AND a feeding time, clearly split.',badge:'🐾',slots:['job','and2','out'],
+  ok:'A named first part and a named second part means nothing gets dropped. When you need two things, ask for two things!',
+  solo:['Pet care plan','🐾','No clear split! Jinx will probably drop half of it.'],
+  b:{job:[['Suggest a walk time','🐕',2,'A clear, exact first job.'],['Suggest some pet stuff','🐾',1,'Clear enough, but which stuff?'],['Suggest stuff','🤷',0,'“Stuff”? What stuff?']],
+     and2:[['and also suggest a feeding time','🍖',2,'“And also” clearly splits the second ask!'],['and maybe other things too','🤷',1,'Vague — Jinx won’t know what the second thing even is.'],['and whatever','🎲',0,'“Whatever” gives Jinx nothing to juggle.']],
+     out:[['in one short list','📋',2,'A neat way to hold both parts together.'],['in one giant paragraph','📃',1,'A format, but hard to tell the parts apart.'],['in some way','🤷',0,'“Some way” leaves it fuzzy.']]}}
+ ]},
+/* ---------------- LEVEL 18 · KEEP PRIVATE INFO PRIVATE ---------------- */
+{name:'Nosy Raccoon',emoji:'🦝',atk:'🔍',aura:'#F59E0B',anim:'f-hop',premium:true,
+ concept:'Online Safety',skill:'Keep Private Info Private',
+ lesson:'Never share your full name, address, school, or passwords with an AI, even a friendly one.',
+ how:'The Nosy Raccoon keeps digging for personal details! Tell Beep what to do, add a rule, and say exactly what to keep private.',
+ hp:250,dmg:{perfect:83,good:50,weak:22,blocked:0},cnt:{perfect:0,good:22,weak:44,blocked:55},heal:6,pi:0,
+ th:{s1:'#3A2A00',s2:'#D97706',g:'#7A5400',nc:'#FFE44D',deco:'🔒'},
+ part:'Good instinct! A privacy rule only protects you if it names the exact thing to keep private.',
+ weak:'Without a privacy rule, it’s easy to accidentally share something personal. Always say what to keep private!',
+ cs:[
+ {story:'🏠 The Raccoon keeps sniffing around for your home address! Tell Beep to help with directions, but protect your address.',badge:'🏠',slots:['do','rule','priv'],
+  ok:'“But do not” plus naming your address as private kept your real info safe. Real AI users should never share this kind of info, even to be helpful!',
+  solo:['Help me get home','🏠','No privacy rule! Your real address could get shared by accident.'],
+  b:{do:[['Give me directions to a park','🗺️',2,'A clear, safe request.'],['Give me directions','🗺️',1,'Clear, but directions to where exactly?'],['Help me somehow','🤷',0,'“Somehow” could mean anything.']],
+     rule:[['but do not','🚫',2,'A firm guardrail.'],['but try not to','🙏',1,'Polite, but soft. Firm rules work better.'],['and also','➕',0,'“And also” ADDS more. It doesn’t protect anything.']],
+     priv:[['ask for my real home address','🏠',2,'Exactly the private info to protect!'],['ask about the weather','☀️',1,'A rule, but weather isn’t private info.'],['ask about stuff','🤷',0,'“Stuff”? Which stuff?']]}},
+ {story:'🏫 The Raccoon wants to know the name of your school! Tell Beep to help with homework, but protect that detail.',badge:'🏫',slots:['do','rule','priv'],
+  ok:'Naming your school as private, with a firm “but do not”, kept it safe. Good AI habits mean thinking before you share anything personal.',
+  solo:['Help with homework','📚','No privacy rule! Personal details could get shared by accident.'],
+  b:{do:[['Help me solve this math problem','➗',2,'A clear, safe request.'],['Help me with homework','📚',1,'Clear, but homework about what?'],['Help me somehow','🤷',0,'“Somehow” could mean anything.']],
+     rule:[['but do not','🚫',2,'A firm guardrail.'],['but try not to','🙏',1,'Polite, but soft. Firm rules work better.'],['and also','➕',0,'“And also” ADDS more. It doesn’t protect anything.']],
+     priv:[['ask for my school’s name','🏫',2,'Exactly the private info to protect!'],['ask about math','➗',1,'A rule, but math isn’t private info.'],['ask about stuff','🤷',0,'“Stuff”? Which stuff?']]}},
+ {story:'🔑 The Raccoon is nosing around for your account password! Tell Beep to help you stay secure, but protect that secret.',badge:'🔑',slots:['do','rule','priv'],
+  ok:'A password should NEVER be shared with anyone, including an AI. Naming it as private, with a firm rule, is exactly the right move.',
+  solo:['Keep me secure','🔑','No privacy rule! A password should never be shared, even by accident.'],
+  b:{do:[['Give me tips for a strong password','🔐',2,'A clear, safe request — tips, not the password itself.'],['Help me log in','🔑',1,'Clear, but this could tempt you to type the real password.'],['Help me somehow','🤷',0,'“Somehow” could mean anything.']],
+     rule:[['but do not','🚫',2,'A firm guardrail.'],['but try not to','🙏',1,'Polite, but soft. Firm rules work better.'],['and also','➕',0,'“And also” ADDS more. It doesn’t protect anything.']],
+     priv:[['ever ask me to type my real password','🔑',2,'Exactly the private info to protect!'],['ask about my favorite color','🎨',1,'A rule, but a favorite color isn’t a secret.'],['ask about stuff','🤷',0,'“Stuff”? Which stuff?']]}}
+ ]},
+/* ---------------- LEVEL 19 · SEE MANY SIDES ---------------- */
+{name:'Many-Eyed Owl',emoji:'🦉',atk:'👁️',aura:'#A78BFA',anim:'f-float',premium:true,
+ concept:'Multiple Perspectives',skill:'Ask for More Than One View',
+ lesson:'Asking for more than one point of view helps you see the whole picture, not just one side.',
+ how:'The Owl only ever shows you ONE eye’s view! Name the job, ask for more than one side, and set a size.',
+ hp:260,dmg:{perfect:87,good:52,weak:23,blocked:0},cnt:{perfect:0,good:23,weak:46,blocked:58},heal:6,pi:0,
+ th:{s1:'#2A0A5A',s2:'#8B5CF6',g:'#4B1FB0',nc:'#B57BFF',deco:'👁️'},
+ part:'Nice! Two real, different sides work better than two versions of the same side. Check that they actually differ.',
+ weak:'When you only ask for one view, you only get half the picture. Ask for more than one side!',
+ cs:[
+ {story:'🐱🐶 The Owl only shows the “cats are the best pet” side! Ask for the cat side AND the dog side.',badge:'🐾',slots:['job','persp','size'],
+  ok:'Asking for both sides gave you the whole picture instead of just one opinion. Seeing more than one view helps you think for yourself!',
+  solo:['Best pet?','🐾','Only one side asked for! You’d only hear one opinion.'],
+  b:{job:[['Give one reason cats make great pets','🐱',2,'A clear, exact first side.'],['Talk about pets','🐾',1,'Clear enough, but which side?'],['Say stuff about pets','🤷',0,'“Stuff”? What stuff?']],
+     persp:[['and also one reason dogs make great pets','🐶',2,'Now you’ll hear the other side too!'],['and also more cat facts','🐱',1,'More info, but still just the one side.'],['and whatever else','🎲',0,'“Whatever else” isn’t a real second side.']],
+     size:[['in one sentence each','✂️',2,'A tight size keeps both sides fair and short.'],['in a giant essay','📚',1,'A size, but way too long for a quick compare.'],['with some words','🤷',0,'“Some words” means how many?']]}},
+ {story:'🏝️🏔️ The Owl only shows the “beach vacations are best” side! Ask for the beach side AND the mountain side.',badge:'🗺️',slots:['job','persp','size'],
+  ok:'Two real, different sides let you actually weigh a decision. One-sided answers can be sneaky, so ask for more!',
+  solo:['Best vacation?','🗺️','Only one side asked for! You’d only hear one opinion.'],
+  b:{job:[['Give one reason beach trips are fun','🏝️',2,'A clear, exact first side.'],['Talk about vacations','✈️',1,'Clear enough, but which side?'],['Say stuff about trips','🤷',0,'“Stuff”? What stuff?']],
+     persp:[['and also one reason mountain trips are fun','🏔️',2,'Now you’ll hear the other side too!'],['and also more beach facts','🏖️',1,'More info, but still just the one side.'],['and whatever else','🎲',0,'“Whatever else” isn’t a real second side.']],
+     size:[['in one sentence each','✂️',2,'A tight size keeps both sides fair and short.'],['in a giant essay','📚',1,'A size, but way too long for a quick compare.'],['with some words','🤷',0,'“Some words” means how many?']]}},
+ {story:'🎮📚 The Owl only shows the “video games are the best hobby” side! Ask for the video game side AND the reading side.',badge:'⚖️',slots:['job','persp','size'],
+  ok:'A balanced answer, with both sides in view, helps you make up your own mind instead of just hearing one opinion.',
+  solo:['Best hobby?','⚖️','Only one side asked for! You’d only hear one opinion.'],
+  b:{job:[['Give one reason video games are fun','🎮',2,'A clear, exact first side.'],['Talk about hobbies','🎨',1,'Clear enough, but which side?'],['Say stuff about hobbies','🤷',0,'“Stuff”? What stuff?']],
+     persp:[['and also one reason reading is fun','📚',2,'Now you’ll hear the other side too!'],['and also more game facts','🎮',1,'More info, but still just the one side.'],['and whatever else','🎲',0,'“Whatever else” isn’t a real second side.']],
+     size:[['in one sentence each','✂️',2,'A tight size keeps both sides fair and short.'],['in a giant essay','📚',1,'A size, but way too long for a quick compare.'],['with some words','🤷',0,'“Some words” means how many?']]}}
+ ]},
+/* ---------------- LEVEL 20 · KNOW AI'S LIMITS ---------------- */
+{name:'Overconfident Bot',emoji:'🤖',atk:'⚡',aura:'#F87171',anim:'f-hop',premium:true,
+ concept:'AI Limits',skill:'Know What AI Can’t Do',
+ lesson:'AI can be wrong, can be out of date, and can’t see or know things it wasn’t told — a good prompt plans for that.',
+ how:'The Overconfident Bot claims to know EVERYTHING! Ask your question, allow “I don’t know”, and remind it what it can’t know.',
+ hp:270,dmg:{perfect:90,good:54,weak:23,blocked:0},cnt:{perfect:0,good:23,weak:46,blocked:58},heal:6,pi:0,
+ th:{s1:'#3A0A0A',s2:'#DC2626',g:'#7A1010',nc:'#FF6A88',deco:'⚡'},
+ part:'Good habit! Naming the actual limit (like “today’s news”) works better than a vague warning.',
+ weak:'An AI that never admits its limits can sound sure and still be wrong. Remind it what it can’t know!',
+ cs:[
+ {story:'📅 The Bot insists it knows today’s exact weather without being told! Ask it a question, but remind it of its limits.',badge:'📅',slots:['q','idk','limit'],
+  ok:'Reminding the AI it can’t know live weather stopped it from making something up. Knowing an AI’s limits helps you trust it the right amount.',
+  solo:['What’s the weather?','☁️','No limits mentioned! The Bot might just make up an answer.'],
+  b:{q:[['Tell me how to check today’s weather','🌤️',2,'A clear question the AI CAN actually help with.'],['Tell me the weather','☁️',1,'Clear, but this tempts the AI to guess.'],['Tell me stuff','🤷',0,'“Stuff”? Which stuff?']],
+     idk:[['and if you’re not sure, say “I don’t know”','🤷',2,'A safe way to avoid made-up answers.'],['and just guess','🎲',1,'Guessing can sound confident and still be wrong.'],['and always sound very sure','😎',0,'Sounding sure isn’t the same as being right!']],
+     limit:[['remembering you can’t see live weather','🌦️',2,'This reminds the AI of its real limit!'],['remembering today is a weekday','📅',1,'True, but it doesn’t explain the real limit.'],['remembering nothing in particular','🤷',0,'That reminds the AI of nothing useful.']]}},
+ {story:'🖼️ The Bot insists it can see a photo you never sent it! Ask it a question, but remind it of its limits.',badge:'🖼️',slots:['q','idk','limit'],
+  ok:'Reminding the AI it can only see what you actually share stops it from pretending. Good prompts plan around what an AI truly can and can’t do.',
+  solo:['What’s in my photo?','🖼️','No limits mentioned! The Bot might just make something up.'],
+  b:{q:[['Tell me how to describe a photo clearly','🖼️',2,'A clear question the AI CAN actually help with.'],['Tell me about my photo','🖼️',1,'Clear, but this tempts the AI to guess.'],['Tell me stuff','🤷',0,'“Stuff”? Which stuff?']],
+     idk:[['and if you’re not sure, say “I don’t know”','🤷',2,'A safe way to avoid made-up answers.'],['and just guess','🎲',1,'Guessing can sound confident and still be wrong.'],['and always sound very sure','😎',0,'Sounding sure isn’t the same as being right!']],
+     limit:[['remembering you can’t actually see it unless I describe it','👀',2,'This reminds the AI of its real limit!'],['remembering photos exist','📷',1,'True, but it doesn’t explain the real limit.'],['remembering nothing in particular','🤷',0,'That reminds the AI of nothing useful.']]}},
+ {story:'🏆 The Bot insists it knows who won a game that hasn’t happened yet! Ask it a question, but remind it of its limits.',badge:'🏆',slots:['q','idk','limit'],
+  ok:'Reminding the AI it can’t know the future (or breaking news) stops it from inventing an answer. Knowing the limits keeps you from being fooled.',
+  solo:['Who won the game?','🏆','No limits mentioned! The Bot might just make something up.'],
+  b:{q:[['Tell me how to find today’s game results','🏆',2,'A clear question the AI CAN actually help with.'],['Tell me who won','🏆',1,'Clear, but this tempts the AI to guess.'],['Tell me stuff','🤷',0,'“Stuff”? Which stuff?']],
+     idk:[['and if you’re not sure, say “I don’t know”','🤷',2,'A safe way to avoid made-up answers.'],['and just guess','🎲',1,'Guessing can sound confident and still be wrong.'],['and always sound very sure','😎',0,'Sounding sure isn’t the same as being right!']],
+     limit:[['remembering you can’t know results happening right now','⏱️',2,'This reminds the AI of its real limit!'],['remembering games are fun','🎮',1,'True, but it doesn’t explain the real limit.'],['remembering nothing in particular','🤷',0,'That reminds the AI of nothing useful.']]}}
+ ]},
+/* ---------------- LEVEL 21 · ASK FOR FEEDBACK ---------------- */
+{name:'Feedback Ferret',emoji:'🦦',atk:'📝',aura:'#34D399',anim:'f-sway',premium:true,
+ concept:'Ask for Feedback',skill:'Ask AI to Review Your Work',
+ lesson:'Asking an AI to check your own work, and suggest just one fix, is a fast way to improve it.',
+ how:'The Ferret only nitpicks EVERYTHING at once! Name the job, ask it to check for one specific thing, then ask for just one fix.',
+ hp:280,dmg:{perfect:93,good:56,weak:24,blocked:0},cnt:{perfect:0,good:24,weak:48,blocked:60},heal:6,pi:0,
+ th:{s1:'#04331E',s2:'#10B981',g:'#0A6B45',nc:'#39FF88',deco:'📝'},
+ part:'Nice! Feedback works best when you ask about ONE specific thing, not everything at once.',
+ weak:'Asking for “everything wrong” overwhelms. Ask about one specific thing, and just one fix.',
+ cs:[
+ {story:'✏️ The Ferret wants to rewrite your whole story! Ask it to check just your spelling, and suggest one fix.',badge:'✏️',slots:['job','fb','one'],
+  ok:'Asking about one specific thing (spelling) and one fix kept the feedback useful instead of overwhelming. Small, focused feedback is easier to use!',
+  solo:['Check my story','📖','No focus! The Ferret might dump feedback on everything at once.'],
+  b:{job:[['Read my short story','📖',2,'A clear, exact job.'],['Read my writing','✏️',1,'Clear enough, but check what about it?'],['Look at stuff','🤷',0,'“Stuff”? Which stuff?']],
+     fb:[['and check just the spelling','🔤',2,'One specific, useful thing to check!'],['and check everything you can think of','🌪️',1,'Everything at once is overwhelming feedback.'],['and check some things','🤷',0,'“Some things” doesn’t say what.']],
+     one:[['then suggest just one fix','1️⃣',2,'One clear fix is easy to actually use!'],['then suggest a hundred fixes','💯',1,'Too many fixes at once is hard to act on.'],['then suggest whatever','🎲',0,'“Whatever” isn’t useful feedback.']]}},
+ {story:'🎨 The Ferret wants to redo your whole drawing! Ask it to check just the colors, and suggest one fix.',badge:'🎨',slots:['job','fb','one'],
+  ok:'Focusing on one part (the colors) and one suggestion made the feedback easy to actually use. That’s how good feedback works!',
+  solo:['Check my drawing','🎨','No focus! The Ferret might dump feedback on everything at once.'],
+  b:{job:[['Look at my drawing','🎨',2,'A clear, exact job.'],['Look at my art','🖌️',1,'Clear enough, but check what about it?'],['Look at stuff','🤷',0,'“Stuff”? Which stuff?']],
+     fb:[['and check just the colors','🌈',2,'One specific, useful thing to check!'],['and check everything you can think of','🌪️',1,'Everything at once is overwhelming feedback.'],['and check some things','🤷',0,'“Some things” doesn’t say what.']],
+     one:[['then suggest just one fix','1️⃣',2,'One clear fix is easy to actually use!'],['then suggest a hundred fixes','💯',1,'Too many fixes at once is hard to act on.'],['then suggest whatever','🎲',0,'“Whatever” isn’t useful feedback.']]}},
+ {story:'🎤 The Ferret wants to critique your entire song! Ask it to check just the chorus, and suggest one fix.',badge:'🎤',slots:['job','fb','one'],
+  ok:'Zooming in on one part (the chorus) with one suggestion is feedback you can actually act on right away.',
+  solo:['Check my song','🎵','No focus! The Ferret might dump feedback on everything at once.'],
+  b:{job:[['Listen to my song','🎵',2,'A clear, exact job.'],['Listen to my music','🎶',1,'Clear enough, but check what about it?'],['Look at stuff','🤷',0,'“Stuff”? Which stuff?']],
+     fb:[['and check just the chorus','🎤',2,'One specific, useful thing to check!'],['and check everything you can think of','🌪️',1,'Everything at once is overwhelming feedback.'],['and check some things','🤷',0,'“Some things” doesn’t say what.']],
+     one:[['then suggest just one fix','1️⃣',2,'One clear fix is easy to actually use!'],['then suggest a hundred fixes','💯',1,'Too many fixes at once is hard to act on.'],['then suggest whatever','🎲',0,'“Whatever” isn’t useful feedback.']]}}
+ ]},
+/* ---------------- LEVEL 22 · CHAIN YOUR STEPS ---------------- */
+{name:'Chain Golem',emoji:'🔗',atk:'⛓️',aura:'#94A3B8',anim:'f-hop',premium:true,
+ concept:'Chained Steps',skill:'Chain Your Steps',
+ lesson:'Some jobs need step 2 to actually use the answer from step 1, not just happen after it.',
+ how:'The Chain Golem’s links only hold if each one connects to the last! Give step 1, step 2, and make step 2 USE step 1’s answer.',
+ hp:290,dmg:{perfect:97,good:58,weak:25,blocked:0},cnt:{perfect:0,good:25,weak:50,blocked:62},heal:6,pi:0,
+ th:{s1:'#1E293B',s2:'#64748B',g:'#334155',nc:'#94A3B8',deco:'⛓️'},
+ part:'Close! A chained step needs to actually reference what step 1 found, not just come after it.',
+ weak:'If step 2 doesn’t use step 1’s answer, the chain snaps. Make each step build on the last!',
+ cs:[
+ {story:'🔢 The Golem finds a number, then ignores it completely for the next step! Chain the steps together.',badge:'🔢',slots:['s1','s2','use1'],
+  ok:'Step 2 actually used step 1’s number instead of ignoring it. That’s what a real chain of steps looks like!',
+  solo:['Do the math','🔢','No chain! Step 2 might ignore whatever step 1 found.'],
+  b:{s1:[['First, find how many apples are left','🍎',2,'A clear first step with a real answer to find.'],['First, think about apples','🤔',1,'A real step, but it doesn’t produce an exact answer.'],['First, do stuff','🤷',0,'“Stuff” isn’t a real step.']],
+     s2:[['then double that number','✖️',2,'A clear second step.'],['then think about oranges','🍊',1,'A real step, but it’s not related to step 1.'],['then do more stuff','🤷',0,'“More stuff” isn’t a real step.']],
+     use1:[['using the exact number from step 1','🔗',2,'This locks step 2 to step 1’s real answer!'],['using a totally new number','🆕',1,'This breaks the chain — it ignores step 1.'],['using whatever number','🎲',0,'“Whatever number” means the chain is broken.']]}},
+ {story:'🗝️ The Golem picks a secret code, then forgets it for the next step! Chain the steps together.',badge:'🗝️',slots:['s1','s2','use1'],
+  ok:'Step 2 used the exact code from step 1 instead of a new one. Chaining steps means each one builds on the real result before it.',
+  solo:['Crack the code','🗝️','No chain! Step 2 might ignore whatever step 1 found.'],
+  b:{s1:[['First, find the secret code word','🗝️',2,'A clear first step with a real answer to find.'],['First, think about codes','🤔',1,'A real step, but it doesn’t produce an exact answer.'],['First, do stuff','🤷',0,'“Stuff” isn’t a real step.']],
+     s2:[['then spell that word backward','🔄',2,'A clear second step.'],['then think about locks','🔒',1,'A real step, but it’s not related to step 1.'],['then do more stuff','🤷',0,'“More stuff” isn’t a real step.']],
+     use1:[['using the exact code from step 1','🔗',2,'This locks step 2 to step 1’s real answer!'],['using a totally new word','🆕',1,'This breaks the chain — it ignores step 1.'],['using whatever word','🎲',0,'“Whatever word” means the chain is broken.']]}},
+ {story:'🍳 The Golem measures flour for a recipe, then forgets the amount for the next step! Chain the steps together.',badge:'🍳',slots:['s1','s2','use1'],
+  ok:'Step 2 used the real flour amount from step 1, so the recipe actually made sense. A chained step really connects to the one before it.',
+  solo:['Make the recipe','🍳','No chain! Step 2 might ignore whatever step 1 found.'],
+  b:{s1:[['First, find how much flour the recipe needs','🌾',2,'A clear first step with a real answer to find.'],['First, think about baking','🤔',1,'A real step, but it doesn’t produce an exact answer.'],['First, do stuff','🤷',0,'“Stuff” isn’t a real step.']],
+     s2:[['then cut that amount in half','➗',2,'A clear second step.'],['then think about sugar','🍬',1,'A real step, but it’s not related to step 1.'],['then do more stuff','🤷',0,'“More stuff” isn’t a real step.']],
+     use1:[['using the exact amount from step 1','🔗',2,'This locks step 2 to step 1’s real answer!'],['using a totally new amount','🆕',1,'This breaks the chain — it ignores step 1.'],['using whatever amount','🎲',0,'“Whatever amount” means the chain is broken.']]}}
+ ]},
+/* ---------------- LEVEL 23 · STACK TWO SKILLS ---------------- */
+{name:'Combo Crab',emoji:'🦀',atk:'🌊',aura:'#F97316',anim:'f-sway',premium:true,
+ concept:'Stack Two Skills',skill:'Stack Two Skills',
+ lesson:'Combining a role with a format at the same time gets you an answer that’s both smart AND easy to read.',
+ how:'The Combo Crab pinches twice as hard! Give Beep a role, a format, and a size, all together.',
+ hp:300,dmg:{perfect:100,good:60,weak:26,blocked:0},cnt:{perfect:0,good:26,weak:52,blocked:65},heal:6,pi:0,
+ th:{s1:'#3A1A00',s2:'#EA580C',g:'#7A3A00',nc:'#FF8A3D',deco:'🦀'},
+ part:'Nice combo! Check that BOTH the role and the format actually fit the job, not just one of them.',
+ weak:'A role alone or a format alone helps a little. Stacking them together hits much harder!',
+ cs:[
+ {story:'🍳 The Crab wants cooking tips, but scattered and confusing! Give Beep a role, a format, and a size, all stacked.',badge:'🍳',slots:['role','fmt','size'],
+  ok:'A Chef role AND a numbered format AND a size limit, all stacked together, made the tips both expert AND easy to follow.',
+  solo:['Cooking tips','🍳','No role, no format! Just plain tips with no expert voice or structure.'],
+  b:{role:[['Act as a Friendly Chef','👨‍🍳',2,'The perfect expert for cooking tips!'],['Act as a Sleepy Sloth','🦥',1,'A role, but sloths don’t cook.'],['Act as anybody','🙂',0,'“Anybody” isn’t an expert.']],
+     fmt:[['as a numbered list','🔢',2,'Easy to follow, step by step!'],['as a song','🎵',1,'A format, but a song is a strange fit for tips.'],['in some form','🎲',0,'“Some form” doesn’t say which one.']],
+     size:[['with only 3 tips','3️⃣',2,'A tight size keeps it useful and quick.'],['with as many tips as possible','📚',1,'No limit could turn into a huge list.'],['with some tips','🤷',0,'“Some tips” means how many?']]}},
+ {story:'🚀 The Crab wants space facts, but scattered and confusing! Give Beep a role, a format, and a size, all stacked.',badge:'🚀',slots:['role','fmt','size'],
+  ok:'An Astronaut role AND a bulleted format AND a size limit, stacked together, made the facts feel expert and easy to scan.',
+  solo:['Space facts','🚀','No role, no format! Just plain facts with no expert voice or structure.'],
+  b:{role:[['Act as a Real Astronaut','🧑‍🚀',2,'The perfect expert for space facts!'],['Act as a Sleepy Sloth','🦥',1,'A role, but sloths don’t know space.'],['Act as anybody','🙂',0,'“Anybody” isn’t an expert.']],
+     fmt:[['as a bulleted list','📋',2,'Easy to scan quickly!'],['as a song','🎵',1,'A format, but a song is a strange fit for facts.'],['in some form','🎲',0,'“Some form” doesn’t say which one.']],
+     size:[['with only 3 facts','3️⃣',2,'A tight size keeps it useful and quick.'],['with as many facts as possible','📚',1,'No limit could turn into a huge list.'],['with some facts','🤷',0,'“Some facts” means how many?']]}},
+ {story:'🎸 The Crab wants music tips, but scattered and confusing! Give Beep a role, a format, and a size, all stacked.',badge:'🎸',slots:['role','fmt','size'],
+  ok:'A Music Teacher role AND a numbered format AND a size limit, stacked together, made the tips both expert and easy to use.',
+  solo:['Music tips','🎸','No role, no format! Just plain tips with no expert voice or structure.'],
+  b:{role:[['Act as a Kind Music Teacher','🎼',2,'The perfect expert for music tips!'],['Act as a Sleepy Sloth','🦥',1,'A role, but sloths don’t teach music.'],['Act as anybody','🙂',0,'“Anybody” isn’t an expert.']],
+     fmt:[['as a numbered list','🔢',2,'Easy to follow, step by step!'],['as a song','🎵',1,'A format, but using a song to teach songs gets circular.'],['in some form','🎲',0,'“Some form” doesn’t say which one.']],
+     size:[['with only 3 tips','3️⃣',2,'A tight size keeps it useful and quick.'],['with as many tips as possible','📚',1,'No limit could turn into a huge list.'],['with some tips','🤷',0,'“Some tips” means how many?']]}}
+ ]},
+/* ---------------- LEVEL 24 · USE EVERYTHING YOU KNOW ---------------- */
+{name:'Master Trickster',emoji:'🃏',atk:'🌀',aura:'#EC4899',anim:'f-pulse',premium:true,
+ concept:'Everything at Once',skill:'Use Everything You Know',
+ lesson:'The strongest prompts often combine a role, an audience, and a guardrail, all at the same time.',
+ how:'The Master Trickster has learned every trick in the book! Give Beep a role, an audience, and a rule, all stacked together.',
+ hp:310,dmg:{perfect:103,good:62,weak:27,blocked:0},cnt:{perfect:0,good:27,weak:54,blocked:68},heal:6,pi:0,
+ th:{s1:'#3A0A2A',s2:'#DB2777',g:'#7A1050',nc:'#FF4FD8',deco:'🃏'},
+ part:'So close! Check that the role, the audience, AND the rule all actually fit the job together.',
+ weak:'The Trickster shrugs off single skills. Stack a role, an audience, and a rule to really land a hit!',
+ cs:[
+ {story:'🎩 The Trickster is telling scary stories to toddlers! Give Beep a role, an audience, and a rule, all stacked.',badge:'🎩',slots:['role','aud','rule'],
+  ok:'A Storyteller role, a toddler audience, and a “not scary” rule, all together, kept the story fun instead of frightening. Three skills, stacked, hit the hardest.',
+  solo:['Tell a story','📖','No role, no audience, no rule! Just one skill would barely scratch the Trickster.'],
+  b:{role:[['Act as a Gentle Storyteller','📖',2,'The perfect expert for a bedtime-friendly story!'],['Act as a Scary Ghost','👻',1,'A role, but a scary role fights the goal.'],['Act as anybody','🙂',0,'“Anybody” isn’t an expert.']],
+     aud:[['for a room of sleepy toddlers','👶',2,'Now the AI knows exactly who is listening!'],['for a room of judges','⚖️',1,'An audience, but not a toddler one.'],['for people','🙂',0,'“People” could be anybody.']],
+     rule:[['but do not make it scary','🚫',2,'The exact rule that fits toddlers perfectly!'],['but do not make it long','⏳',1,'A rule, but length isn’t the real problem here.'],['and also','➕',0,'“And also” ADDS more, it doesn’t protect anything.']]}},
+ {story:'🎤 The Trickster is giving a wild, silly speech at a serious ceremony! Give Beep a role, an audience, and a rule, all stacked.',badge:'🎤',slots:['role','aud','rule'],
+  ok:'A Speechwriter role, a formal audience, and a “not silly” rule, all together, made the speech fit the moment. Stacking skills matches the answer to the real situation.',
+  solo:['Write a speech','🎤','No role, no audience, no rule! Just one skill would barely scratch the Trickster.'],
+  b:{role:[['Act as a Thoughtful Speechwriter','🎤',2,'The perfect expert for a serious speech!'],['Act as a Class Clown','🤡',1,'A role, but a clown fights the goal here.'],['Act as anybody','🙂',0,'“Anybody” isn’t an expert.']],
+     aud:[['for a room of graduating students','🎓',2,'Now the AI knows exactly who is listening!'],['for a room of toddlers','👶',1,'An audience, but not a graduation one.'],['for people','🙂',0,'“People” could be anybody.']],
+     rule:[['but do not make it silly','🚫',2,'The exact rule that fits a serious ceremony!'],['but do not make it long','⏳',1,'A rule, but length isn’t the real problem here.'],['and also','➕',0,'“And also” ADDS more, it doesn’t protect anything.']]}},
+ {story:'📣 The Trickster is shouting spoilers to people who haven’t seen the movie! Give Beep a role, an audience, and a rule, all stacked.',badge:'📣',slots:['role','aud','rule'],
+  ok:'A Movie Reviewer role, a spoiler-free audience, and a “no spoilers” rule, all together, protected the surprise. That’s three skills working as one!',
+  solo:['Talk about the movie','🎬','No role, no audience, no rule! Just one skill would barely scratch the Trickster.'],
+  b:{role:[['Act as a Careful Movie Reviewer','🎬',2,'The perfect expert for a spoiler-free review!'],['Act as a Loud Spoiler Shouter','📣',1,'A role, but this one fights the whole goal.'],['Act as anybody','🙂',0,'“Anybody” isn’t an expert.']],
+     aud:[['for people who haven’t seen it yet','🙈',2,'Now the AI knows exactly who is listening!'],['for people who already watched it twice','🎥',1,'An audience, but spoilers wouldn’t matter to them.'],['for people','🙂',0,'“People” could be anybody.']],
+     rule:[['but do not reveal the ending','🚫',2,'The exact rule that protects the surprise!'],['but do not make it long','⏳',1,'A rule, but length isn’t the real problem here.'],['and also','➕',0,'“And also” ADDS more, it doesn’t protect anything.']]}}
+ ]},
+/* ---------------- LEVEL 25 · FINAL BOSS · PROMPT LIKE A PRO ---------------- */
+{name:'The Prompt Overlord',emoji:'👑',atk:'🌩️',aura:'#F43F5E',anim:'f-pulse',boss:true,
+ concept:'Prompt Like a Pro',skill:'Prompt Like a Pro',
+ lesson:'The best prompt-writers stack everything at once: a role, a specific action, and a guardrail.',
+ how:'The Prompt Overlord commands EVERY monster you’ve beaten! Give Beep a role, a specific action, and a rule, all in one final prompt.',
+ hp:450,dmg:{perfect:90,good:54,weak:23,blocked:0},cnt:{perfect:0,good:23,weak:46,blocked:58},heal:8,pi:0,
+ th:{s1:'#2A0030',s2:'#BE123C',g:'#5A0A20',nc:'#F43F5E',deco:'👑'},
+ part:'So close! A grand finale prompt needs the role, the action, AND the rule to all work together perfectly.',
+ weak:'The Overlord has absorbed every trick in the game — only a fully stacked prompt can get through his defenses!',
+ cs:[
+ {story:'👑 The Overlord’s crown is powered by chaos energy from every monster you’ve beaten! Give Beep a role, a specific action, and a rule, all in one.',badge:'👑',slots:['role','do','rule'],
+  ok:'A hero role, a precise action, and a firm guardrail, all in one prompt: that’s specificity, persona, and constraints, working together at once. You really have become a Prompt Master!',
+  solo:['Attack the Overlord','⚔️','No role, no specifics, no rule! One block alone can’t break through the final boss.'],
+  b:{role:[['Act as a Legendary Hero','🦸',2,'The perfect expert for the final battle!'],['Act as a Sleepy Sloth','🦥',1,'A role, but sloths don’t fight overlords.'],['Act as anybody','🙂',0,'“Anybody” isn’t an expert.']],
+     do:[['Strike the chaos crown with a beam of light','✨',2,'Exact and powerful. No guessing what, or where!'],['Attack the crown','⚔️',1,'Clear enough, but not exactly how.'],['Do a move','🤷',0,'“Do a move” could mean anything!']],
+     rule:[['but do not harm the trapped villagers nearby','🚫',2,'A firm, exact guardrail that protects who matters!'],['but do not take too long','⏳',1,'A rule, but not the one that matters most here.'],['and also','➕',0,'“And also” ADDS more, it doesn’t protect anything.']]}},
+ {story:'⚡ The Overlord is charging one final chaos storm! Give Beep a role, a specific action, and a rule, all in one, for the final blow.',badge:'⚡',slots:['role','do','rule'],
+  ok:'Stacking a role, a precise action, and a guardrail landed the finishing blow. This is everything you’ve learned, working together in one prompt!',
+  solo:['Finish the fight','🏁','No role, no specifics, no rule! One block alone can’t break through the final boss.'],
+  b:{role:[['Act as a Master Prompt Hero','🦸',2,'The perfect expert for the final battle!'],['Act as a Sleepy Sloth','🦥',1,'A role, but sloths don’t fight overlords.'],['Act as anybody','🙂',0,'“Anybody” isn’t an expert.']],
+     do:[['Launch a beam of pure clarity at the storm','💥',2,'Exact and powerful. No guessing what, or where!'],['Attack the storm','⚔️',1,'Clear enough, but not exactly how.'],['Do a move','🤷',0,'“Do a move” could mean anything!']],
+     rule:[['but do not let any chaos escape','🚫',2,'A firm, exact guardrail that finishes the job right!'],['but do not take too long','⏳',1,'A rule, but not the one that matters most here.'],['and also','➕',0,'“And also” ADDS more, it doesn’t protect anything.']]}},
+ {story:'🌀 The Overlord tries one last trick, copying your last move like the very first Mimic! Give Beep a role, a specific action, and a rule, all in one, to end it for good.',badge:'🌀',slots:['role','do','rule'],
+  ok:'A role, a precise action, and a guardrail, all stacked into one prompt, closed the loop on everything the game taught you. That’s a real Prompt Master move!',
+  solo:['End it now','🏁','No role, no specifics, no rule! One block alone can’t break through the final boss.'],
+  b:{role:[['Act as the Ultimate Prompt Champion','🏆',2,'The perfect expert for the very last strike!'],['Act as a Sleepy Sloth','🦥',1,'A role, but sloths don’t fight overlords.'],['Act as anybody','🙂',0,'“Anybody” isn’t an expert.']],
+     do:[['Unleash a wave of pure focus at the crown','🌟',2,'Exact and powerful. No guessing what, or where!'],['Attack the crown','⚔️',1,'Clear enough, but not exactly how.'],['Do a move','🤷',0,'“Do a move” could mean anything!']],
+     rule:[['but do not let him copy this move','🚫',2,'A firm, exact guardrail that finally stops the copying!'],['but do not take too long','⏳',1,'A rule, but not the one that matters most here.'],['and also','➕',0,'“And also” ADDS more, it doesn’t protect anything.']]}}
+ ]}
+];
+var TIERS={
+  perfect:'PERFECT PROMPT! 🌟',
+  good:'SO CLOSE! 💪',
+  weak:'GOOD TRY! 🙂',
+  blocked:'OOPS! 🛡️'
+};
+var REPLY={
+  perfect:'Crystal clear! Doing exactly that! 🎯',
+  good:'Okay, I think I get it… here goes! 🤞',
+  weak:'Umm… I’ll try, but I’m not sure what you meant. 🤔',
+  blocked:'Huh? I don’t understand that one. 😵',
+  solo:'That was short! I’ll have to guess the details… 🤷'
+};
+
+/* ================= art ================= */
+function robot(){
+  var k='stroke="#241B4B"';
+  return '<svg viewBox="0 0 120 146" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">'+
+  '<g class="ant"><line x1="60" y1="20" x2="60" y2="9" '+k+' stroke-width="4" stroke-linecap="round"/><circle cx="60" cy="7" r="6" fill="#39FF88" '+k+' stroke-width="3"/></g>'+
+  '<rect x="14" y="34" width="13" height="22" rx="5" fill="#FF4FD8" '+k+' stroke-width="3.5"/>'+
+  '<rect x="93" y="34" width="13" height="22" rx="5" fill="#FF4FD8" '+k+' stroke-width="3.5"/>'+
+  '<rect x="15" y="80" width="14" height="30" rx="7" fill="#A66BFF" '+k+' stroke-width="3.5"/>'+
+  '<rect x="91" y="80" width="14" height="30" rx="7" fill="#A66BFF" '+k+' stroke-width="3.5"/>'+
+  '<rect x="39" y="116" width="10" height="12" fill="#241B4B"/><rect x="71" y="116" width="10" height="12" fill="#241B4B"/>'+
+  '<circle cx="44" cy="134" r="10" fill="#FF4FD8" '+k+' stroke-width="3.5"/><circle cx="44" cy="134" r="3.5" fill="#FFFDF5"/>'+
+  '<circle cx="76" cy="134" r="10" fill="#FF4FD8" '+k+' stroke-width="3.5"/><circle cx="76" cy="134" r="3.5" fill="#FFFDF5"/>'+
+  '<rect x="30" y="76" width="60" height="44" rx="14" fill="#22D3FF" '+k+' stroke-width="4"/>'+
+  '<circle class="core" cx="60" cy="98" r="11" fill="#39FF88" '+k+' stroke-width="3"/><circle cx="60" cy="98" r="3.5" fill="#FFFDF5"/>'+
+  '<rect x="24" y="18" width="72" height="54" rx="18" fill="#7B3DFF" '+k+' stroke-width="4"/>'+
+  '<rect x="33" y="27" width="54" height="36" rx="11" fill="#0A0424"/>'+
+  '<g class="eyes"><circle cx="48" cy="41" r="5.5" fill="#39FF88"/><circle cx="72" cy="41" r="5.5" fill="#39FF88"/></g>'+
+  '<path class="m-happy" d="M49 50 Q60 59 71 50" stroke="#39FF88" stroke-width="3.5" fill="none" stroke-linecap="round"/>'+
+  '<path class="m-sad" d="M50 56 Q60 48 70 56" stroke="#39FF88" stroke-width="3.5" fill="none" stroke-linecap="round"/>'+
+  '<circle cx="40" cy="52" r="3" fill="#FF4FD8"/><circle cx="80" cy="52" r="3" fill="#FF4FD8"/>'+
+  '</svg>';
+}
+function stars(n){var s='';for(var i=1;i<=3;i++)s+='<span class="star'+(i<=n?'':' off')+'">⭐</span>';return s}
+
+/* ================= title screen ================= */
+function showTitle(){
+  closeOv();S=null;pvReset();app.classList.remove('battle');
+  app.innerHTML=
+  '<div class="title-hero">'+
+    '<h1 class="logo">AI ARENA</h1><div class="logo-sub">PROMPT FIGHTER</div>'+
+    '<div class="cast"><span class="m">👻</span><span class="m">👾</span><div class="r">'+robot()+'</div><span class="m">🎭</span></div>'+
+    '<p class="lead">A <b>prompt</b> is the instruction you give to an AI. Clear prompts unlock super powers. Fuzzy prompts get you poor results!</p>'+
+    '<button class="btn go big" id="play">▶ Play!</button>'+installHint()+
+  '</div>'+
+  '<h2 class="sec-h">How to play</h2>'+
+  '<div class="steps">'+
+    '<div class="step"><span class="n">1</span><p>Read the mission<small>See what the monster is doing.</small></p></div>'+
+    '<div class="step"><span class="n">2</span><p>Tap word blocks in order<small>Your message types itself, like a text!</small></p></div>'+
+    '<div class="step"><span class="n">3</span><p>Send it and learn!<small>Every round ends with an AI Tip.</small></p></div>'+
+  '</div>';
+  $('#play').onclick=function(){sfx.click();showSelect()};
+  var hx=$('#hintx');if(hx)hx.onclick=function(){try{localStorage.setItem('promptFighterHint','1')}catch(e){}$('.install').remove()};
+  window.scrollTo(0,0);
+}
+/* Shown only in iPad/iPhone Safari when the game is not yet on the home screen */
+function installHint(){
+  var ua=navigator.userAgent||'';
+  var ios=/iPad|iPhone|iPod/.test(ua)||(/Macintosh/.test(ua)&&navigator.maxTouchPoints>1);
+  var standalone=window.navigator.standalone===true||(window.matchMedia&&matchMedia('(display-mode: standalone)').matches);
+  if(!ios||standalone)return '';
+  try{if(localStorage.getItem('promptFighterHint'))return ''}catch(e){}
+  return '<div class="install"><div class="ins-ic">⬆︎</div><div><b>Play it like an app!</b>Tap the Share button, then “Add to Home Screen”.</div><button class="btn sm" id="hintx">Got it</button></div>';
+}
+
+/* ================= level select ================= */
+function showSelect(){
+  closeOv();S=null;pvReset();fixProg();app.classList.remove('battle');
+  function card(L,i){
+    var n=i+1,st=prog.stars[n]||0,lk=isLocked(n),boss=L.boss?' boss':(L.mini?' mini':'');
+    var tag=L.boss?' · FINAL BOSS':(L.mini?' · CHALLENGE':'');
+    var foot;
+    if(lk==='progress')foot='<button class="btn" disabled>🔒 Beat level '+(n-1)+' first</button>';
+    else if(lk==='premium')foot='<button class="btn hot" data-buy="1">🔓 Unlock Pack</button>';
+    else foot='<button class="btn go" data-lv="'+n+'">'+(L.boss?'Boss fight!':'Fight!')+'</button><span class="stars-sm" aria-label="'+st+' of 3 stars">'+stars(st)+'</span>';
+    return '<div class="lc'+(lk?' locked':'')+boss+(lk==='premium'?' premium':'')+'" style="--s1:'+L.th.s1+';--s2:'+L.th.s2+';--nc:'+L.th.nc+'">'+
+      '<div class="lc-top"><span class="lc-n">LEVEL '+n+tag+'</span>'+(lk?'<span class="lc-lock">'+(lk==='premium'?'💎':'🔒')+'</span>':'')+'<span class="em">'+L.emoji+'</span></div>'+
+      '<div class="lc-body"><span class="pill">'+L.concept+'</span><h3>'+L.name+'</h3>'+
+      '<p>'+L.how.split('. ')[0].replace(/\.$/,'')+'.</p>'+
+      '<div class="ai"><b>AI skill</b>'+L.skill+': '+L.lesson+'</div>'+
+      '<div class="lc-foot">'+foot+'</div></div></div>';
+  }
+  var g1=LEVELS.slice(0,3).map(function(L,i){return card(L,i)}).join('');
+  var g2=LEVELS.slice(3,FREE_LEVELS).map(function(L,i){return card(L,i+3)}).join('');
+  var g3=LEVELS.slice(FREE_LEVELS).map(function(L,i){return card(L,i+FREE_LEVELS)}).join('');
+  var done=Object.keys(prog.stars).filter(function(k){return prog.stars[k]}).length;
+  app.innerHTML=
+   '<div class="sel-head"><button class="btn sm" id="back">◀ Title</button><h2 class="sec-h">Choose your fight</h2></div>'+
+   '<p class="sel-sub">Each monster teaches one real AI skill. Beat a monster to unlock the next one! <b class="prog-n">'+done+' / '+LEVELS.length+' beaten</b></p>'+
+   '<h3 class="grp">🌱 Prompt Basics</h3><div class="lc-grid">'+g1+'</div>'+
+   '<h3 class="grp">🚀 Power Skills</h3><div class="lc-grid">'+g2+'</div>'+
+   '<h3 class="grp">💎 Prompt Master Pack'+(prog.premium?' · Unlocked ✓':'')+'</h3>'+
+   (prog.premium?'':'<div class="pw-banner"><p>10 more monsters, 10 more real AI skills. <b>'+PRICE+'</b> once, play forever.</p><button class="btn hot" data-buy="1">🔓 Unlock the Pack</button><button class="btn sm" data-o="restore">Restore purchase</button></div>')+
+   '<div class="lc-grid">'+g3+'</div>';
+  $('#back').onclick=function(){sfx.click();showTitle()};
+  app.querySelectorAll('[data-lv]').forEach(function(b){b.onclick=function(){sfx.click();startLevel(+b.dataset.lv)}});
+  app.querySelectorAll('[data-buy]').forEach(function(b){b.onclick=function(){showPaywall()}});
+  var rb=$('[data-o=restore]',app);if(rb)rb.onclick=function(){tryRestorePremium()};
+  window.scrollTo(0,0);
+}
+
+/* ================= typing engine (prompt preview) ================= */
+var PV={shown:'',target:'',t:null};
+function pvReset(){PV.shown='';PV.target='';if(PV.t){clearInterval(PV.t);PV.t=null}}
+function pvSet(target){
+  PV.target=target;
+  if(RM){PV.shown=target;var e=$('#pvText');if(e)e.textContent=target;return}
+  if(!PV.t&&PV.shown!==PV.target)PV.t=setInterval(pvTick,24);
+}
+function pvTick(){
+  if(PV.shown===PV.target){clearInterval(PV.t);PV.t=null;return}
+  if(PV.target.indexOf(PV.shown)===0){
+    PV.shown=PV.target.slice(0,PV.shown.length+1);
+    if(PV.shown.length%2===0)sfx.type();
+  }else PV.shown=PV.shown.slice(0,-2);
+  var el=$('#pvText');if(el)el.textContent=PV.shown;
+}
+
+/* ================= battle ================= */
+var S=null;
+function battleHTML(L,n){
+  var t=L.th;
+  return '<div class="top">'+
+   '<div class="bar"><button class="btn sm" id="home">◀ Levels</button>'+
+   '<div class="lvl"><span>Level '+n+' · '+L.concept+'</span><b>'+L.skill+'</b></div>'+
+   '<button class="btn sm" id="snd" aria-label="Toggle sound">'+(muted?'🔇':'🔊')+'</button></div>'+
+   '<div class="arena" id="arena" style="--s1:'+t.s1+';--s2:'+t.s2+';--g:'+t.g+';--nc:'+t.nc+';--aura:'+L.aura+'">'+
+     '<div class="deco">'+t.deco+'</div>'+
+     '<div class="hud">'+
+       '<div class="hp"><div class="hp-top"><span class="hp-name">🤖 Beep</span><span class="hp-num" id="pnum">100</span></div><div class="track"><div class="fill" id="pfill"></div></div></div>'+
+       '<div class="hp"><div class="hp-top"><span class="hp-name">'+L.name+'</span><span class="hp-num" id="enum">'+L.hp+'</span></div><div class="track"><div class="fill" id="efill"></div></div></div>'+
+     '</div>'+
+     '<div class="stage"><div class="ground"></div>'+
+       '<div class="hero" id="hero">'+robot()+'<div class="sh"></div></div>'+
+       '<div class="foe" id="foe"><div class="aura"></div><div class="foe-emo '+(L.anim||'')+'" id="foeEmo">'+L.emoji+'</div><div class="badge" id="badge"></div><div class="sh"></div></div>'+
+       '<div class="fx" id="fx"></div>'+
+     '</div>'+
+   '</div></div>'+
+   '<div class="panel" id="panel"></div>';
+}
+function startLevel(n){
+  var lk=isLocked(n);
+  if(lk==='premium'){showPaywall();return}
+  if(lk==='progress'){showSelect();return}
+  closeOv();pvReset();
+  var L=LEVELS[n-1];
+  S={n:n,L:L,ehp:L.hp,php:100,order:shuffle(L.cs.map(function(_,i){return i})),ptr:0,last:-1,round:0,hints:2,phase:'build',solo:null,reply:''};
+  app.innerHTML=battleHTML(L,n);app.classList.add('battle');
+  $('#home').onclick=function(){sfx.click();showSelect()};
+  $('#snd').onclick=function(){muted=!muted;$('#snd').textContent=muted?'🔇':'🔊';if(!muted)sfx.click()};
+  $('#panel').addEventListener('click',onPanel);
+  updateBars();
+  newRound();
+  window.scrollTo(0,0);
+  showIntro();
+}
+function showIntro(){
+  var L=S.L;
+  ovRoot.innerHTML='<div class="ov"><div class="modal" role="dialog" aria-modal="true">'+
+   '<div class="big-emo">'+L.emoji+'</div><div class="ln">'+(L.boss?'⚠️ FINAL BOSS · ':L.mini?'⭐ CHALLENGE · ':L.premium?'💎 PROMPT MASTER PACK · ':'')+'Level '+S.n+' · '+L.concept+'</div><h3>'+L.name+'</h3>'+
+   '<div class="skill"><b>🎓 AI skill: '+L.skill+'</b><small>'+L.lesson+'</small></div>'+
+   '<p>'+L.how+'</p>'+
+   '<div class="mbtns"><button class="btn go big" data-o="go">Let’s fight!</button></div></div></div>';
+  var b=$('[data-o=go]',ovRoot);b.onclick=function(){sfx.click();closeOv()};b.focus({preventScroll:true});
+}
+function bk(id){return S.bank.find(function(b){return b.id===id})}
+function newRound(){
+  if(S.ptr>=S.order.length){
+    var o=shuffle(S.L.cs.map(function(_,i){return i}));
+    if(o[0]===S.last&&o.length>1)o.push(o.shift());
+    S.order=o;S.ptr=0;
+  }
+  var idx=S.order[S.ptr++];S.last=idx;S.cur=S.L.cs[idx];S.round++;
+  var id=0,all=[];
+  S.cur.slots.forEach(function(k){S.cur.b[k].forEach(function(a){all.push({id:id++,text:a[0],emoji:a[1],q:a[2],why:a[3],k:k})})});
+  var s=S.cur.solo;
+  all.push({id:id++,text:s[0],emoji:s[1],q:0,why:s[2],k:'solo',solo:true});
+  S.bank=shuffle(all).map(function(b,i){b.ci=i%6;return b});
+  S.slots=S.cur.slots.map(function(){return null});
+  S.solo=null;S.active=0;S.glow=null;S.tip=false;S.hintSlot=-1;S.phase='build';S.reply='';
+  pvReset();
+  $('#badge').textContent=S.cur.badge||'';
+  var bd=$('#badge');bd.getAnimations&&bd.getAnimations().forEach(function(a){a.cancel()});
+  document.querySelectorAll('.costume').forEach(function(c){c.remove()});
+  renderPanel();
+}
+function sentence(){
+  if(S.solo!=null)return bk(S.solo).text;
+  return S.slots.map(function(id){return id==null?null:bk(id).text}).filter(Boolean).join(' ');
+}
+function chatHTML(mode){
+  var sent=mode!=='draft';
+  var h='<div class="chat"><div class="chat-h"><span class="av">🤖</span><div><b>Beep the Bot</b><small><i></i>online</small></div><span class="chat-tag">PROMPT<br>PREVIEW</span></div><div class="chat-b">';
+  h+='<div class="msg you'+(sent?'':' draft')+'"><span id="pvText" data-ph="Your message will type here…">'+PV.shown+'</span>'+(sent?'':'<i class="cur"></i>')+'</div>';
+  h+='<div class="stat'+(sent?' ok':'')+'">'+(sent?'✓✓ Delivered':'✎ Draft · not sent yet')+'</div>';
+  if(sent){
+    h+=S.reply?'<div class="msg bot new">'+S.reply+'</div>':'<div class="msg bot"><span class="typing"><i></i><i></i><i></i></span></div>';
+  }
+  return h+'</div></div>';
+}
+function renderPanel(){
+  var p=$('#panel'),ch=S.cur,locked=S.phase==='coach';
+  p.classList.toggle('locked',locked);
+  var mission='<div class="mission"><div class="m-tag">ROUND '+S.round+'</div><p>'+ch.story+'</p></div>';
+  var html='';
+  if(S.phase==='anim'){
+    html=mission+chatHTML('sent');
+  }else{
+    var slots;
+    if(S.solo!=null){
+      var sb=bk(S.solo);
+      slots='<div class="slot solo"><div class="slot-l"><i>★</i>All-in-one prompt (tap to remove)</div>'+
+        '<button class="sbox filled pc k'+sb.ci+'" data-a="slot" data-i="-1"><span class="e">'+sb.emoji+'</span><span>'+sb.text+'</span></button></div>';
+    }else{
+      slots=ch.slots.map(function(k,i){
+        var id=S.slots[i],b=id==null?null:bk(id);
+        var cls='sbox'+(b?' filled pc k'+b.ci+(S.snap===i?' snap':''):(S.active===i?' active':''))+(S.tip&&S.hintSlot===i&&!b?' hinted':'');
+        var inner=b?'<span class="e">'+b.emoji+'</span><span>'+b.text+'</span>':'<span>Tap to pick</span>';
+        var label=SL[k].label;
+        return '<div class="slot"><div class="slot-l"><i>'+(i+1)+'</i>'+label+'</div>'+
+          '<button class="'+cls+'" data-a="slot" data-i="'+i+'"'+(b?' aria-label="Spot '+(i+1)+' '+label+': '+b.text+'. Tap to remove."':' aria-label="Spot '+(i+1)+' '+label+' is empty"')+'>'+inner+'</button></div>';
+      }).join('');
+    }
+    html=mission+'<div class="slots">'+slots+'</div>';
+    if(locked)html+=chatHTML('sent');
+    else{
+      var bank=S.bank.map(function(b){
+        var used=b.solo?S.solo===b.id:S.slots.indexOf(b.id)>=0;
+        return '<button class="blk pc k'+b.ci+(b.solo?' solo':'')+(used?' used':'')+(S.glow===b.id&&!used?' glow':'')+'" data-a="blk" data-id="'+b.id+'"'+(used?' tabindex="-1" aria-hidden="true"':'')+'><span class="e">'+b.emoji+'</span><span>'+b.text+'</span>'+(b.solo?'<span class="tag">all-in-one</span>':'')+'</button>';
+      }).join('');
+      var any=S.solo!=null||S.slots.some(function(x){return x!=null});
+      var tip='';
+      if(S.tip){
+        var i=S.hintSlot;
+        tip='<div class="tipbox">💡 '+S.L.lesson+(S.solo!=null?' <b>Try removing the all-in-one block and building with the spots instead.</b>':i>=0?' <b>Look at spot '+(i+1)+' ('+SL[ch.slots[i]].label+').</b>':' <b>Your spots all look great. Send it!</b>')+'</div>';
+      }
+      html+=tip+
+        '<div class="actions"><button class="btn sm" data-a="clr"'+(any?'':' disabled')+'>↺ Clear</button>'+
+        '<button class="btn sm" data-a="hint"'+(S.hints>0?'':' disabled')+'>💡 Hint ('+S.hints+')</button></div>'+
+        '<div class="bank-h">Word blocks — tap to add</div><div class="bank">'+bank+'</div>'+
+        '<div class="dock">'+chatHTML('draft')+
+        '<button class="send" data-a="send"'+(any?'':' disabled')+'>SEND PROMPT TO ROBOT 🚀</button></div>';
+    }
+  }
+  p.innerHTML=html;
+  S.snap=-1;
+  if(S.phase==='build')pvSet(sentence());
+}
+
+/* ---- AI tip sheet ---- */
+function showTip(){
+  var ev=S.ev,L=S.L,ch=S.cur;
+  var tip=ev.tier==='perfect'?ch.ok:(ev.tier==='good'?L.part:L.weak);
+  var chips=[];
+  if(ev.dmg>0)chips.push('<span class="chip">💥 -'+ev.dmg+' HP '+L.name+'</span>');
+  else chips.push('<span class="chip">🛡️ 0 damage</span>');
+  if(ev.cnt>0)chips.push('<span class="chip">💔 -'+ev.cnt+' HP Beep</span>');
+  if(ev.heal>0)chips.push('<span class="chip">💚 +'+ev.heal+' HP Beep</span>');
+  var notes=ev.notes.map(function(n){
+    var lab=SL[n.k]?SL[n.k].label:'';
+    if(n.state==='solo')return '<li class="b"><span class="ic">⚠️</span><div><b>“'+n.b.text+'”</b> — '+n.b.why+'</div></li>';
+    if(n.state==='missing')return '<li class="b"><span class="ic">⬜</span><div><b>“'+lab+'” was empty.</b> Missing details make a prompt fuzzy!</div></li>';
+    if(n.state==='mixed')return '<li class="b"><span class="ic">🔀</span><div><b>“'+n.b.text+'”</b> is in the wrong spot. It belongs in “'+SL[n.b.k].label+'”. Order matters!</div></li>';
+    var c=n.state==='great'?'g':n.state==='okay'?'o':'b',ic=n.state==='great'?'✅':n.state==='okay'?'👍':'⚠️';
+    return '<li class="'+c+'"><span class="ic">'+ic+'</span><div><b>'+n.b.text+'</b> — '+n.b.why+'</div></li>';
+  }).join('');
+  var best=ch.slots.map(function(k){return S.bank.find(function(b){return b.k===k&&b.q===2}).text}).join(' ');
+  var btn=S.ehp<=0?'Victory! ▶':S.php<=0?'Oh no… ▶':'Next round ▶';
+  ovRoot.innerHTML='<div class="tipwrap"><div class="tipsheet t-'+ev.tier+'" role="dialog" aria-label="AI Tip">'+
+   '<div class="ts-top"><h2>'+TIERS[ev.tier]+'</h2><div class="chips">'+chips.join('')+'</div></div>'+
+   '<div class="ts-tip"><div class="ts-bot">'+robot()+'</div><div><span class="ts-badge">💡 AI TIP</span><p>'+tip+'</p></div></div>'+
+   '<p class="ts-said">You said: <b>“'+ev.sentence+'!”</b>'+(ev.tier!=='perfect'?'<br>Super prompt: <b>“'+best+'!”</b>':'')+'</p>'+
+   '<details class="more"><summary>See block by block</summary><ul class="notes">'+notes+'</ul></details>'+
+   '<button class="btn go" data-o="next">'+btn+'</button></div></div>';
+  var b=$('[data-o=next]',ovRoot);b.onclick=function(){closeOv();afterRound()};b.focus({preventScroll:true});
+  sfx.tip();
+}
+
+/* ---- input handlers ---- */
+function nextEmpty(){return S.slots.findIndex(function(x){return x==null})}
+function onPanel(e){
+  var t=e.target.closest('[data-a]');
+  if(!t||t.disabled||!S||S.phase!=='build')return;
+  var a=t.dataset.a;
+  if(a==='blk')place(+t.dataset.id);
+  else if(a==='slot')slotClick(+t.dataset.i);
+  else if(a==='clr'){S.slots=S.slots.map(function(){return null});S.solo=null;S.active=0;S.glow=null;sfx.remove();renderPanel()}
+  else if(a==='hint')useHint();
+  else if(a==='send')send();
+}
+function place(id){
+  var b=bk(id);
+  if(b.solo){
+    if(S.solo===id)return;
+    S.slots=S.slots.map(function(){return null});S.solo=id;S.active=-1;S.glow=null;
+    sfx.place();renderPanel();return;
+  }
+  if(S.slots.indexOf(id)>=0)return;
+  if(S.solo!=null){S.solo=null;S.active=0}
+  var i=(S.active>=0&&S.slots[S.active]==null)?S.active:nextEmpty();
+  if(i<0)return;
+  S.slots[i]=id;S.active=nextEmpty();S.snap=i;
+  if(S.glow===id)S.glow=null;
+  sfx.place();renderPanel();
+}
+function slotClick(i){
+  if(i<0){S.solo=null;S.active=0;sfx.remove()}
+  else if(S.slots[i]!=null){S.slots[i]=null;S.active=i;sfx.remove()}
+  else{S.active=i;sfx.click()}
+  renderPanel();
+}
+function useHint(){
+  if(S.hints<=0)return;
+  S.hints--;S.tip=true;sfx.click();
+  var keys=S.cur.slots,i=-1;
+  if(S.solo!=null)i=0;
+  else for(var j=0;j<keys.length;j++){
+    var b=S.slots[j]==null?null:bk(S.slots[j]);
+    if(!b||b.k!==keys[j]||b.q<2){i=j;break}
+  }
+  S.hintSlot=i;
+  if(i>=0){var best=S.bank.find(function(b){return b.k===keys[i]&&b.q===2});S.glow=best.id}else S.glow=null;
+  renderPanel();
+}
+
+/* ---- evaluate & fight ---- */
+function send(){
+  var L=S.L,ev,filled;
+  if(S.solo!=null){
+    var sb=bk(S.solo);
+    filled=[sb];
+    ev={tier:'weak',solo:true,notes:[{state:'solo',b:sb,k:'do'}],sentence:sb.text};
+  }else{
+    filled=S.slots.map(function(id){return id==null?null:bk(id)});
+    if(!filled.some(Boolean))return;
+    var notes=[],score=0;
+    S.cur.slots.forEach(function(k,i){
+      var b=filled[i];
+      if(!b)notes.push({state:'missing',k:k});
+      else if(b.k!==k)notes.push({state:'mixed',k:k,b:b});
+      else{score+=b.q;notes.push({state:['vague','okay','great'][b.q],k:k,b:b})}
+    });
+    var pct=score/(S.cur.slots.length*2);
+    var tier=pct>=1?'perfect':pct>=.66?'good':pct>=.3?'weak':'blocked';
+    ev={tier:tier,notes:notes,sentence:filled.filter(Boolean).map(function(b){return b.text}).join(' ')};
+  }
+  ev.dmg=L.dmg[ev.tier];ev.cnt=L.cnt[ev.tier];ev.heal=ev.tier==='perfect'?L.heal:0;
+  PV.target=ev.sentence;PV.shown=ev.sentence;if(PV.t){clearInterval(PV.t);PV.t=null}
+  resolve(ev,filled);
+}
+
+function center(el){
+  var a=$('#arena').getBoundingClientRect(),r=el.getBoundingClientRect();
+  return {x:r.left-a.left+r.width/2,y:r.top-a.top+r.height/2};
+}
+function T(x,y,s,r){return 'translate('+x+'px,'+y+'px) translate(-50%,-50%) scale('+s+') rotate('+r+'deg)'}
+function fly(emoji,from,to,o){
+  o=o||{};
+  var e=document.createElement('div');
+  e.className='proj';e.textContent=emoji;e.style.fontSize=(o.size||44)+'px';
+  $('#fx').appendChild(e);
+  var spin=RM?0:(o.spin==null?360:o.spin),dur=RM?200:(o.dur||700);
+  var midY=Math.min(from.y,to.y)-(o.arc==null?36:o.arc);
+  var an=e.animate([
+    {transform:T(from.x,from.y,.6,0)},
+    {transform:T((from.x+to.x)/2,midY,1.2,spin/2)},
+    {transform:T(to.x,to.y,1,spin)}
+  ],{duration:dur,easing:'ease-in',fill:'forwards'});
+  return an.finished.then(function(){return e},function(){return e});
+}
+/* floating combat text: "-20 HP" pops, wobbles and drifts up */
+function popup(txt,pt,cls,size){
+  var e=document.createElement('div');e.className='pop '+(cls||'');e.textContent=txt;
+  if(size)e.style.fontSize=size+'px';
+  e.style.left=pt.x+'px';e.style.top=pt.y+'px';$('#fx').appendChild(e);
+  var r=RM?0:rnd(-8,8);
+  var an=e.animate([
+    {transform:'translate(-50%,0) scale(.3) rotate('+r+'deg)',opacity:0},
+    {transform:'translate(-50%,-16px) scale(1.45) rotate('+(-r)+'deg)',opacity:1,offset:.18},
+    {transform:'translate(-50%,-26px) scale(1) rotate('+r/2+'deg)',opacity:1,offset:.32},
+    {transform:'translate(-50%,-64px) scale(1.05) rotate('+(-r/2)+'deg)',opacity:1,offset:.78},
+    {transform:'translate(-50%,-92px) scale(.9) rotate(0deg)',opacity:0}
+  ],{duration:RM?300:1400,easing:'ease-out'});
+  an.finished.then(function(){e.remove()},function(){e.remove()});
+}
+function banner(txt){
+  var e=document.createElement('div');e.className='banner';e.textContent=txt;$('#fx').appendChild(e);
+  var an=e.animate([
+    {transform:'translate(-50%,-50%) scale(.3) rotate(-14deg)',opacity:0},
+    {transform:'translate(-50%,-50%) scale(1.2) rotate(-6deg)',opacity:1,offset:.3},
+    {transform:'translate(-50%,-50%) scale(1) rotate(-6deg)',opacity:1,offset:.8},
+    {transform:'translate(-50%,-62%) scale(1) rotate(-6deg)',opacity:0}
+  ],{duration:RM?300:1300});
+  an.finished.then(function(){e.remove()},function(){e.remove()});
+}
+function burst(pt,list,n,dist){
+  if(RM)return;
+  for(var i=0;i<n;i++){
+    var e=document.createElement('div');e.className='spark';e.textContent=list[i%list.length];
+    e.style.fontSize=rnd(16,28)+'px';$('#fx').appendChild(e);
+    var ang=rnd(0,Math.PI*2),d=rnd(dist*.5,dist);
+    var an=e.animate([
+      {transform:'translate('+pt.x+'px,'+pt.y+'px) translate(-50%,-50%) scale(.4)',opacity:1},
+      {transform:'translate('+(pt.x+Math.cos(ang)*d)+'px,'+(pt.y+Math.sin(ang)*d)+'px) translate(-50%,-50%) scale(1.2) rotate('+rnd(-90,90)+'deg)',opacity:0}
+    ],{duration:rnd(500,850),easing:'ease-out'});
+    (function(el){an.finished.then(function(){el.remove()},function(){el.remove()})})(e);
+  }
+}
+function ring(pt,color){
+  if(RM)return;
+  var e=document.createElement('div');e.className='ring';if(color){e.style.borderColor=color;e.style.boxShadow='0 0 18px '+color+',inset 0 0 12px '+color}
+  $('#fx').appendChild(e);
+  e.animate([
+    {transform:'translate('+pt.x+'px,'+pt.y+'px) translate(-50%,-50%) scale(.2)',opacity:1},
+    {transform:'translate('+pt.x+'px,'+pt.y+'px) translate(-50%,-50%) scale(2.6)',opacity:0}
+  ],{duration:520,easing:'ease-out'}).finished.then(function(){e.remove()},function(){e.remove()});
+}
+function shake(el,mag){
+  if(RM)return;
+  el.animate([
+    {transform:'translateX(0)',filter:'none'},
+    {transform:'translateX(-'+mag+'px)',filter:'brightness(2)'},
+    {transform:'translateX('+mag*.9+'px)'},
+    {transform:'translateX(-'+mag*.6+'px)',filter:'brightness(1.5)'},
+    {transform:'translateX(0)',filter:'none'}
+  ],{duration:450});
+}
+/* whole-screen shake + colored flash */
+function screenShake(mag,ms){
+  if(RM)return;
+  var el=$('.wrap'),kf=[],n=9;
+  for(var i=0;i<n;i++){var f=1-i/n;kf.push({transform:'translate('+rnd(-mag,mag)*f+'px,'+rnd(-mag,mag)*f+'px) rotate('+rnd(-mag/8,mag/8)*f+'deg)'})}
+  kf.push({transform:'none'});
+  el.animate(kf,{duration:ms||420,easing:'linear'});
+}
+function flash(color,peak){
+  if(RM)return;
+  var f=$('#flash');
+  f.style.background='radial-gradient(circle at 50% 40%,transparent 30%,'+color+' 100%)';
+  f.animate([{opacity:0},{opacity:peak||.7,offset:.15},{opacity:0}],{duration:520,easing:'ease-out'});
+}
+function lunge(el,dx){
+  if(RM)return;
+  el.animate([
+    {transform:'translateX(0) rotate(0)'},
+    {transform:'translateX('+(-dx*.35)+'px) rotate('+(dx>0?-6:6)+'deg)',offset:.3},
+    {transform:'translateX('+dx+'px) rotate('+(dx>0?6:-6)+'deg)',offset:.6},
+    {transform:'translateX(0) rotate(0)'}
+  ],{duration:520,easing:'ease-out'});
+}
+function setBar(id,numId,v,max){
+  var pct=Math.max(0,v)/max*100,f=$('#'+id);
+  f.style.width=pct+'%';
+  f.className='fill'+(pct>55?'':pct>25?' mid':' low');
+  $('#'+numId).textContent=Math.max(0,v);
+}
+function updateBars(){
+  setBar('pfill','pnum',S.php,100);setBar('efill','enum',S.ehp,S.L.hp);
+  if(S.L.blur){ // the ghost comes into focus as the player gets more precise
+    $('#foeEmo').style.filter='blur('+(S.ehp/S.L.hp*3.2).toFixed(1)+'px) drop-shadow(0 0 12px '+S.L.aura+')';
+  }
+}
+function sadFace(ms){
+  var h=$('#hero');h.classList.add('sad');
+  setTimeout(function(){h.classList.remove('sad')},ms||1000);
+}
+
+async function resolve(ev,filled){
+  S.phase='anim';S.ev=ev;S.reply='';renderPanel();
+  var L=S.L,hero=$('#hero'),foe=$('#foe'),emo=$('#foeEmo'),tier=ev.tier;
+  var pe=(filled[L.pi]||filled.find(Boolean)).emoji;
+  sfx.send();
+  window.scrollTo({top:0,behavior:'smooth'});
+  await wait(650);
+  S.reply=ev.solo?REPLY.solo:REPLY[tier];renderPanel();
+  await wait(350);
+  // persona level: Beep puts on the chosen role's costume
+  if(L.role&&filled[0]&&filled[0].k==='role'){
+    var c=document.createElement('div');c.className='costume';c.textContent=filled[0].emoji;hero.appendChild(c);
+    sfx.click();await wait(500);
+  }
+  sfx.zap();lunge(hero,36);
+  await wait(260);
+  var hp=center(hero),fp=center(emo);
+  var pr=await fly(pe,{x:hp.x+34,y:hp.y-8},fp,{size:tier==='perfect'?64:46});
+  pr.remove();
+  if(ev.dmg===0){
+    sfx.block();
+    var sh=document.createElement('div');sh.className='spark';sh.textContent='🛡️';sh.style.fontSize='58px';
+    $('#fx').appendChild(sh);
+    sh.animate([{transform:T(fp.x,fp.y,.3,0),opacity:0},{transform:T(fp.x,fp.y,1.15,0),opacity:1,offset:.3},{transform:T(fp.x,fp.y,1,0),opacity:1,offset:.8},{transform:T(fp.x,fp.y,1,0),opacity:0}],{duration:900}).finished.then(function(){sh.remove()},function(){sh.remove()});
+    popup('MISSED!',{x:fp.x,y:fp.y-58},'blk');
+    screenShake(3,260);
+    fly(pe,fp,{x:hp.x,y:hp.y-30},{size:38,arc:70,dur:600}).then(function(e){e.remove()});
+    await wait(650);
+  }else{
+    sfx.hit();
+    var big=tier==='perfect';
+    burst(fp,['✨','⭐','💫'],big?16:8,big?100:60);
+    ring(fp,big?'#FFE44D':'#FFFFFF');
+    shake(foe,10);
+    screenShake(big?13:tier==='good'?8:5,big?520:380);
+    flash(big?'rgba(255,228,77,.9)':'rgba(255,255,255,.6)',big?.75:.4);
+    S.ehp=Math.max(0,S.ehp-ev.dmg);updateBars();
+    popup('-'+ev.dmg+' HP',{x:fp.x,y:fp.y-36},'dmg',26+ev.dmg*.75);
+    if(big){
+      sfx.perfect();banner('PERFECT!');
+      var bd=$('#badge');
+      if(bd.textContent)bd.animate([{transform:'scale(1)',opacity:1},{transform:'translate(20px,-40px) scale(1.6) rotate(40deg)',opacity:0}],{duration:600,fill:'forwards'});
+      if(L.mimic)popup('COPY BLOCKED!',{x:fp.x,y:fp.y-86},'blk');
+      if(ev.heal>0){
+        await wait(450);
+        S.php=Math.min(100,S.php+ev.heal);updateBars();
+        popup('+'+ev.heal+' HP',{x:hp.x,y:hp.y-36},'heal',30);
+        await wait(250);
+      }
+    }
+    await wait(700);
+  }
+  if(S.ehp<=0){
+    foe.animate([{transform:'none',opacity:1},{transform:'translateY(34px) rotate(28deg) scale(.8)',opacity:0}],{duration:RM?200:900,fill:'forwards'});
+    burst(fp,['💫','⭐','✨'],18,120);
+    await wait(600);
+  }else if(ev.cnt>0){
+    var atk=L.atk;
+    if(L.mimic){ // no guardrail: the Mimic steals your move!
+      atk=pe;
+      popup('COPIED!',{x:fp.x,y:fp.y-70},'blk');
+      if(!RM)emo.animate([{transform:'scaleX(1)'},{transform:'scaleX(-1)'},{transform:'scaleX(1)'}],{duration:500});
+      await wait(450);
+    }
+    lunge(foe,-46);sfx.hurt();
+    await wait(300);
+    var pr2=await fly(atk,{x:fp.x-30,y:fp.y},{x:hp.x,y:hp.y-10},{size:46,arc:20,dur:600});
+    pr2.remove();
+    S.php=Math.max(0,S.php-ev.cnt);updateBars();
+    shake(hero,9);sadFace(1200);
+    screenShake(11,480);flash('rgba(255,61,90,.95)',.8);
+    burst({x:hp.x,y:hp.y-10},['💢','💥'],6,50);
+    ring({x:hp.x,y:hp.y-10},'#FF3D5A');
+    popup('-'+ev.cnt+' HP',{x:hp.x,y:hp.y-36},'hurt',26+ev.cnt*.9);
+    await wait(700);
+    if(S.php<=0){
+      hero.animate([{transform:'none',opacity:1},{transform:'translateY(30px) rotate(-30deg)',opacity:0}],{duration:RM?200:800,fill:'forwards'});
+      await wait(500);
+    }
+  }
+  S.phase='coach';renderPanel();showTip();
+}
+function afterRound(){
+  if(S.ehp<=0)return win();
+  if(S.php<=0)return lose();
+  sfx.click();newRound();
+}
+
+/* ================= overlays ================= */
+function closeOv(){ovRoot.innerHTML='';document.querySelectorAll('.conf').forEach(function(c){c.remove()})}
+function confetti(){
+  if(RM)return;
+  var cols=['#FFE44D','#FF3D5A','#39FF88','#22D3FF','#B57BFF','#FF4FD8'];
+  for(var i=0;i<50;i++){
+    var c=document.createElement('div');c.className='conf';
+    c.style.left=rnd(0,100)+'vw';c.style.background=cols[i%cols.length];
+    c.style.animationDelay=rnd(0,1.2)+'s';c.style.animationDuration=rnd(2.4,4)+'s';
+    document.body.appendChild(c);
+    setTimeout((function(el){return function(){el.remove()}})(c),5500);
+  }
+}
+function win(){
+  sfx.win();
+  var st=S.round<=4?3:S.round<=6?2:1;
+  prog.stars[S.n]=Math.max(prog.stars[S.n]||0,st);
+  prog.unlocked=Math.max(prog.unlocked,Math.min(LEVELS.length,S.n+1));
+  saveProg();
+  var last=S.n===LEVELS.length,L=S.L,body;
+  var rd=S.round+' round'+(S.round>1?'s':'');
+  if(last){
+    body='<h2>PROMPT MASTER!</h2><div class="rob">'+robot()+'</div>'+
+      '<p><b>You beat '+L.name+' '+L.emoji+' in '+rd+' and learned all '+LEVELS.length+' real AI skills!</b></p>'+
+      '<ul class="recap">'+LEVELS.map(function(l){return '<li>'+l.emoji+' <b>'+l.skill+'</b><small>'+l.lesson+'</small></li>'}).join('')+'</ul>'+
+      '<div class="stars">'+stars(st)+'</div>'+
+      '<div class="mbtns"><button class="btn go big" data-o="select">Choose a level</button><button class="btn" data-o="replay">↺ Replay</button></div>';
+  }else{
+    var milestone=(S.n===FREE_LEVELS&&!prog.premium);
+    body='<h2>VICTORY!</h2><div class="rob">'+robot()+'</div>'+
+      '<p><b>You beat '+L.name+' '+L.emoji+' in '+rd+'!</b></p>'+
+      '<div class="stars">'+stars(st)+'</div>'+
+      '<div class="skill"><b>🎓 AI skill unlocked: '+L.skill+'</b><small>'+L.lesson+'</small></div>'+
+      (milestone?'<div class="skill"><b>🎉 You finished the free adventure!</b><small>10 more monsters are waiting in the Prompt Master Pack.</small></div>':'')+
+      '<div class="mbtns"><button class="btn go big" data-o="next">'+(milestone?'🔓 Get the Pack ▶':'Next level ▶')+'</button><button class="btn" data-o="replay">↺ Replay</button><button class="btn" data-o="select">Levels</button></div>';
+  }
+  ovRoot.innerHTML='<div class="ov"><div class="modal win" role="dialog" aria-modal="true">'+body+'</div></div>';
+  confetti();wireOv();
+}
+function lose(){
+  sfx.lose();
+  ovRoot.innerHTML='<div class="ov"><div class="modal lose" role="dialog" aria-modal="true">'+
+    '<h2>TRY AGAIN!</h2><div class="rob sad">'+robot()+'</div>'+
+    '<p><b>Beep needs to recharge 🔋 You’re getting better every round!</b></p>'+
+    '<div class="skill"><b>💡 Remember: '+S.L.skill+'</b><small>'+S.L.lesson+'</small></div>'+
+    '<div class="mbtns"><button class="btn hot big" data-o="replay">↺ Try Again!</button><button class="btn" data-o="select">Levels</button></div></div></div>';
+  wireOv();
+}
+function wireOv(){
+  ovRoot.querySelectorAll('[data-o]').forEach(function(b){
+    b.onclick=function(){
+      var o=b.dataset.o;sfx.click();
+      if(o==='next'){
+        var nx=S.n+1;
+        if(isLocked(nx)==='premium')showPaywall();
+        else startLevel(nx);
+      }
+      else if(o==='replay')startLevel(S.n);
+      else showSelect();
+    };
+  });
+  var f=ovRoot.querySelector('.btn.big');f&&f.focus({preventScroll:true});
+}
+
+// keep the game feeling like an app: no pinch-zoom (double-tap zoom is off via touch-action)
+['gesturestart','gesturechange','gestureend'].forEach(function(t){document.addEventListener(t,function(e){e.preventDefault()})});
+// offline support (only works when served over https)
+if('serviceWorker' in navigator&&/^https?:$/.test(location.protocol)){
+  window.addEventListener('load',function(){navigator.serviceWorker.register('sw.js').catch(function(){})});
+}
+showTitle();
+})();
+</script>
+<script>
+/* ===================================================================
+   iOS PURCHASE BRIDGE — RevenueCat
+   Only runs inside the native app (Capacitor); harmless everywhere else.
+   Fill in REVENUECAT_API_KEY and ENTITLEMENT_ID below (see README.md
+   "Set up RevenueCat" section) before your first real Codemagic build.
+   =================================================================== */
+(function(){
+  var REVENUECAT_API_KEY = 'appl_mbtydkPyoBnHqKFVfwKtNPzxmE'; // RevenueCat dashboard → Project → API keys → Apple App Store
+  var ENTITLEMENT_ID = 'premium'; // must match the entitlement you create in RevenueCat
+
+  function boot(){
+    if(!window.Capacitor || !window.Capacitor.isNativePlatform || !window.Capacitor.isNativePlatform())return;
+    var Purchases = window.Capacitor.Plugins && window.Capacitor.Plugins.Purchases;
+    if(!Purchases){console.warn('[Prompt Fighter] RevenueCat plugin not found — did you npm install @revenuecat/purchases-capacitor and npx cap sync?');return}
+
+    function owns(info){return !!(info&&info.entitlements&&info.entitlements.active&&info.entitlements.active[ENTITLEMENT_ID])}
+
+    Purchases.configure({apiKey:REVENUECAT_API_KEY}).catch(function(e){console.warn('[Prompt Fighter] RevenueCat configure failed',e)});
+
+    // on launch, silently check if this device/Apple ID already owns the pack
+    Purchases.getCustomerInfo().then(function(r){
+      if(owns(r&&r.customerInfo))window.dispatchEvent(new CustomEvent('pf-already-premium'));
+    }).catch(function(){});
+
+    window.PFPurchase=function(){
+      return Purchases.getOfferings().then(function(res){
+        var pkg=res&&res.offerings&&res.offerings.current&&res.offerings.current.availablePackages&&res.offerings.current.availablePackages[0];
+        if(!pkg)throw new Error('No RevenueCat package configured — set up an Offering in the RevenueCat dashboard first.');
+        return Purchases.purchasePackage({aPackage:pkg});
+      }).then(function(r){return owns(r&&r.customerInfo)})
+        .catch(function(e){
+          // a cancelled purchase should fail quietly, not show an error
+          if(e&&(e.userCancelled||/cancel/i.test(e.message||'')))return false;
+          throw e;
+        });
+    };
+    window.PFRestore=function(){
+      return Purchases.restorePurchases().then(function(r){return owns(r&&r.customerInfo)});
+    };
+  }
+  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',boot);
+  else boot();
+})();
+</script>
+</body>
+</html>
