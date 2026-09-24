@@ -42,10 +42,6 @@ workflows:
           # but keep this here in case you rename things later.
           agvtool new-marketing-version 1.0
 
-      - name: Install CocoaPods dependencies
-        script: |
-          cd ios/App && pod install
-
       - name: Fetch signing files from App Store Connect
         script: |
           app-store-connect fetch-signing-files "$BUNDLE_ID" \
