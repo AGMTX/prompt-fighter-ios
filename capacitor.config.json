@@ -1,0 +1,10 @@
+{
+  "appId": "com.austinwg04.promptfighter",
+  "appName": "AI Arena: Prompt Fighter",
+  "webDir": "www",
+  "backgroundColor": "#0A0424",
+  "ios": {
+    "contentInset": "always",
+    "backgroundColor": "#0A0424"
+  }
+}

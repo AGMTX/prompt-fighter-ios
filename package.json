@@ -1,0 +1,17 @@
+{
+  "name": "prompt-fighter",
+  "version": "1.0.0",
+  "private": true,
+  "description": "AI Arena: Prompt Fighter - iOS wrapper",
+  "scripts": {
+    "sync": "cap sync ios"
+  },
+  "dependencies": {
+    "@capacitor/core": "latest",
+    "@capacitor/ios": "latest",
+    "@revenuecat/purchases-capacitor": "latest"
+  },
+  "devDependencies": {
+    "@capacitor/cli": "latest"
+  }
+}
