@@ -9,9 +9,6 @@ workflows:
       app_store_connect: codemagic
 
     environment:
-      ios_signing:
-        distribution_type: app_store
-        bundle_identifier: com.austinwg04.promptfighter
       vars:
         BUNDLE_ID: "com.austinwg04.promptfighter"
         XCODE_WORKSPACE: "ios/App/App.xcworkspace"
