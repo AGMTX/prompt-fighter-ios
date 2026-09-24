@@ -14,7 +14,7 @@ workflows:
         bundle_identifier: com.austinwg04.promptfighter
       vars:
         BUNDLE_ID: "com.austinwg04.promptfighter"
-        XCODE_WORKSPACE: "ios/App/App.xcworkspace"
+        XCODE_PROJECT: "ios/App/App.xcodeproj"
         XCODE_SCHEME: "App"
         # Numeric Apple ID of the app record in App Store Connect
         # (fill this in once you've created the app record - see README.md).
@@ -58,7 +58,7 @@ workflows:
       - name: Build .ipa
         script: |
           xcode-project build-ipa \
-            --workspace "$XCODE_WORKSPACE" \
+            --project "$XCODE_PROJECT" \
             --scheme "$XCODE_SCHEME"
 
     artifacts:
