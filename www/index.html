@@ -470,12 +470,26 @@ function tryRestorePremium(){
     window.PFRestore().then(function(ok){if(ok){prog.premium=true;saveProg();closeOv();showSelect()}else closeOv()}).catch(function(){closeOv()});
   }else closeOv();
 }
+function pfDebugInfo(){
+  try{
+    var c=window.Capacitor;
+    var lines=[
+      'Capacitor: '+(c?'present':'MISSING'),
+      'isNativePlatform(): '+(c&&c.isNativePlatform?String(c.isNativePlatform()):'n/a'),
+      'getPlatform(): '+(c&&c.getPlatform?String(c.getPlatform()):'n/a'),
+      'Plugins keys: '+(c&&c.Plugins?Object.keys(c.Plugins).join(', ')||'(none)':'n/a'),
+      'Plugins.Purchases: '+(c&&c.Plugins&&c.Plugins.Purchases?'present':'MISSING')
+    ];
+    return lines.join(' | ');
+  }catch(e){return 'debug error: '+e.message}
+}
 function showPaywall(){
   var demo=/[?&]demo=1/.test(location.search),native=!!window.PFPurchase;
   ovRoot.innerHTML='<div class="ov"><div class="modal" role="dialog" aria-modal="true">'+
     '<div class="big-emo">🔓</div><h3>Prompt Master Pack</h3>'+
     '<p><b>Unlock levels 16–25</b> — 10 more monsters and 10 more real AI skills, all in one purchase ('+PRICE+').</p>'+
-    (native?'':'<div class="skill"><b>🍏 This unlocks in the iPhone/iPad app</b><small>Purchases only work inside the App Store version of Prompt Fighter, not on this preview.</small></div>')+
+    (native?'':'<div class="skill"><b>🍏 This unlocks in the iPhone/iPad app</b><small>Purchases only work inside the App Store version of Prompt Fighter, not on this preview.</small></div>'+
+      '<div style="font-size:9px;line-height:1.4;color:#999;word-break:break-all;padding:6px 4px;border:1px dashed #999;margin-top:4px">DEBUG '+pfDebugInfo()+'</div>')+
     '<div class="mbtns"><button class="btn go big" data-o="buy"'+(native?'':' disabled')+'>🔓 Unlock for '+PRICE+'</button>'+
     (native?'<button class="btn sm" data-o="restore">Restore purchase</button>':'')+
     (demo?'<button class="btn sm" data-o="demobuy">🧪 Demo unlock (testing only)</button>':'')+
