@@ -1932,18 +1932,24 @@ showTitle();
 
     function owns(info){return !!(info&&info.entitlements&&info.entitlements.active&&info.entitlements.active[ENTITLEMENT_ID])}
 
-    Purchases.configure({apiKey:REVENUECAT_API_KEY}).catch(function(e){console.warn('[Prompt Fighter] RevenueCat configure failed',e)});
+    // Some RevenueCat/Capacitor plugin builds can throw SYNCHRONOUSLY instead
+    // of cleanly rejecting a promise. Routing every native call through here
+    // turns that into a normal rejection so it can never silently abort this
+    // function partway through (which previously left window.PFPurchase
+    // undefined and stuck the paywall in "preview" mode even on a real device).
+    function safeCall(fn){
+      try{ return Promise.resolve(fn()); }
+      catch(e){ return Promise.reject(e); }
+    }
 
-    // on launch, silently check if this device/Apple ID already owns the pack
-    Purchases.getCustomerInfo().then(function(r){
-      if(owns(r&&r.customerInfo))window.dispatchEvent(new CustomEvent('pf-already-premium'));
-    }).catch(function(){});
-
+    // Define the purchase/restore hooks FIRST — before touching the plugin
+    // at all — so the real paywall button always works even if configure()
+    // or getCustomerInfo() below ends up failing.
     window.PFPurchase=function(){
-      return Purchases.getOfferings().then(function(res){
+      return safeCall(function(){return Purchases.getOfferings()}).then(function(res){
         var pkg=res&&res.offerings&&res.offerings.current&&res.offerings.current.availablePackages&&res.offerings.current.availablePackages[0];
         if(!pkg)throw new Error('No RevenueCat package configured — set up an Offering in the RevenueCat dashboard first.');
-        return Purchases.purchasePackage({aPackage:pkg});
+        return safeCall(function(){return Purchases.purchasePackage({aPackage:pkg})});
       }).then(function(r){return owns(r&&r.customerInfo)})
         .catch(function(e){
           // a cancelled purchase should fail quietly, not show an error
@@ -1952,8 +1958,15 @@ showTitle();
         });
     };
     window.PFRestore=function(){
-      return Purchases.restorePurchases().then(function(r){return owns(r&&r.customerInfo)});
+      return safeCall(function(){return Purchases.restorePurchases()}).then(function(r){return owns(r&&r.customerInfo)});
     };
+
+    safeCall(function(){return Purchases.configure({apiKey:REVENUECAT_API_KEY})}).catch(function(e){console.warn('[Prompt Fighter] RevenueCat configure failed',e)});
+
+    // on launch, silently check if this device/Apple ID already owns the pack
+    safeCall(function(){return Purchases.getCustomerInfo()}).then(function(r){
+      if(owns(r&&r.customerInfo))window.dispatchEvent(new CustomEvent('pf-already-premium'));
+    }).catch(function(){});
   }
   if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',boot);
   else boot();
