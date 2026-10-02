@@ -306,6 +306,15 @@ details.more summary{cursor:pointer;font:900 13px/1.2 var(--body);letter-spacing
 .recap{max-height:34vh;overflow:auto;padding-right:4px}
 .conf{position:fixed;top:-24px;z-index:60;width:10px;height:15px;border-radius:2px;animation:fall 3.2s linear forwards;pointer-events:none}
 
+/* ---------- first-time walkthrough ---------- */
+.coach-blocker{position:fixed;inset:0;z-index:62;background:rgba(5,2,26,.5)}
+.coach-target{position:relative!important;z-index:63;border-radius:18px;outline:4px solid var(--green);outline-offset:3px;box-shadow:0 0 0 6px rgba(57,255,136,.25),0 0 26px rgba(57,255,136,.9);animation:coachPulse 1.1s ease-in-out infinite}
+@keyframes coachPulse{0%,100%{outline-color:var(--green)}50%{outline-color:var(--yellow)}}
+.coach-bar{position:fixed;left:0;right:0;bottom:0;z-index:64;max-width:520px;margin:0 auto;padding:14px 18px calc(14px + env(safe-area-inset-bottom,0px));background:linear-gradient(#26137A,#12093A);border:3px solid var(--green);border-radius:22px 22px 0 0;box-shadow:0 0 30px rgba(57,255,136,.4),0 -4px 0 #05021A;text-align:center;animation:pop .35s cubic-bezier(.2,1.6,.4,1)}
+.coach-bar b{display:block;font:400 19px/1.1 var(--disp);color:var(--yellow);letter-spacing:.01em;margin-bottom:3px}
+.coach-bar p{margin:2px 0 10px;font-weight:700}
+.coach-bar .btn{min-width:200px}
+
 /* ---------- motion ---------- */
 @keyframes squash{
   0%,100%{transform:translateY(0) scale(1.07,.93)}
@@ -1449,7 +1458,63 @@ function showIntro(){
    '<div class="skill"><b>🎓 AI skill: '+L.skill+'</b><small>'+L.lesson+'</small></div>'+
    '<p>'+L.how+'</p>'+
    '<div class="mbtns"><button class="btn go big" data-o="go">Let’s fight!</button></div></div></div>';
-  var b=$('[data-o=go]',ovRoot);b.onclick=function(){sfx.click();closeOv()};b.focus({preventScroll:true});
+  var b=$('[data-o=go]',ovRoot);b.onclick=function(){sfx.click();closeOv();if(S.n===1&&!walkthroughSeen())showWalkthrough()};b.focus({preventScroll:true});
+}
+
+/* ---- first-time walkthrough: auto-demo then let them try ---- */
+function walkthroughSeen(){try{return !!localStorage.getItem('pfWalkthrough1')}catch(e){return true}}
+function markWalkthroughSeen(){try{localStorage.setItem('pfWalkthrough1','1')}catch(e){}}
+function showWalkthrough(){
+  if(!S||S.phase!=='build')return;
+  var blocker=document.createElement('div');blocker.className='coach-blocker';
+  var bar=document.createElement('div');bar.className='coach-bar';
+  document.body.appendChild(blocker);document.body.appendChild(bar);
+  var timer=null;
+  function hi(sel){
+    document.querySelectorAll('.coach-target').forEach(function(e){e.classList.remove('coach-target')});
+    var el=$(sel);
+    if(el){el.classList.add('coach-target');try{el.scrollIntoView({block:'center',behavior:'smooth'})}catch(e){}}
+    return el;
+  }
+  function setBar(title,text,label,onGo,busy){
+    bar.innerHTML='<b>'+title+'</b><p>'+text+'</p><button class="btn go sm" id="coachGo"'+(busy?' disabled':'')+'>'+label+'</button>';
+    var b=$('#coachGo');
+    if(b&&!busy)b.onclick=function(){sfx.click();onGo()};
+  }
+  function finish(){
+    if(timer)clearTimeout(timer);
+    document.querySelectorAll('.coach-target').forEach(function(e){e.classList.remove('coach-target')});
+    blocker.remove();bar.remove();
+    markWalkthroughSeen();
+    if(S&&S.cur){S.slots=S.cur.slots.map(function(){return null});S.solo=null;S.active=0;S.glow=null;renderPanel()}
+  }
+  function step1(){
+    hi('.mission');
+    setBar('👋 Quick demo','This is the mission — it tells you what message Beep should send to '+S.L.name+'.','Show me ▶',step2);
+  }
+  function step2(){
+    hi('.bank');
+    setBar('Tap word blocks','Watch — tapping blocks in order builds Beep’s message for you.','Watching…',function(){},true);
+    var ch=S.cur,delay=500;
+    ch.slots.forEach(function(k){
+      timer=setTimeout(function(){
+        var b=S.bank.find(function(x){return x.k===k&&x.q===2});
+        if(b&&S.slots.indexOf(b.id)<0)place(b.id);
+        hi('.bank');
+      },delay);
+      delay+=700;
+    });
+    timer=setTimeout(step3,delay+200);
+  }
+  function step3(){
+    hi('.dock');
+    setBar('There it is!','See how your message shows up here, just like a text?','Next ▶',step4);
+  }
+  function step4(){
+    hi('.send');
+    setBar('Send it!','When you like your message, tap SEND to see what happens.','Got it, my turn! ▶',finish);
+  }
+  step1();
 }
 function bk(id){return S.bank.find(function(b){return b.id===id})}
 function newRound(){
